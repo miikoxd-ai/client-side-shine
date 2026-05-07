@@ -44,19 +44,22 @@ function LicencePage() {
   const badge = proficiencyBadge(licence.proficiency);
 
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const refreshedLabel = now.toLocaleString("en-AU", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const refreshedLabel = now
+    ? now.toLocaleString("en-AU", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : "";
 
   const qrPayload = useMemo(
     () => `VICROADS:LICENCE:${licence.licenceNumber}`,
