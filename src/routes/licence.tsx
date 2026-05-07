@@ -148,7 +148,7 @@ function LicencePage() {
           </div>
         )}
 
-        <p className="border-t border-border py-1 text-center text-xs text-muted-foreground">
+        <p className="border-t border-border py-0 text-center text-xs leading-tight text-muted-foreground">
           {refreshing ? "Refreshing…" : <>Last refreshed: {refreshedLabel}</>}
         </p>
 
