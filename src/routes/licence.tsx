@@ -169,7 +169,7 @@ function LicencePage() {
             }}
           >
             <div className="relative flex w-full items-stretch gap-4">
-              <div className="relative flex aspect-[4/5] w-[40%] items-center justify-center overflow-hidden rounded-lg bg-muted shadow-sm">
+              <div className="relative flex aspect-[4/5] flex-1 items-center justify-center overflow-hidden rounded-lg bg-muted shadow-sm">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
