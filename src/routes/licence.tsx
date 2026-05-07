@@ -9,6 +9,7 @@ import policeBarcodeImg from "@/assets/police-barcode.avif";
 import licenceBgImg from "@/assets/licence-bg.png";
 import photoOverlayImg from "@/assets/photo-overlay.png";
 import coatOfArmsImg from "@/assets/coat_of_arms_white.png";
+import { useDeviceTilt } from "@/hooks/use-device-tilt";
 import {
   useLicenceStore,
   fullName,
@@ -47,6 +48,10 @@ function LicencePage() {
   const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
+  const tilt = useDeviceTilt(25);
+  const holoShift = `translate(${tilt.x * 6}px, ${tilt.y * 6}px)`;
+  const sheenAngle = 90 + tilt.x * 60;
+  const sheenPos = 50 + tilt.x * 40;
 
   useEffect(() => {
     setNow(new Date());
@@ -178,10 +183,17 @@ function LicencePage() {
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                   </svg>
                 )}
-                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20" />
-                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 opacity-20" />
-                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 -translate-x-1/2 opacity-20" />
-                <img src={coatOfArmsImg} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-5" />
+                <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20 transition-transform" />
+                <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateY(-50%) ${holoShift}` }} className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 opacity-20 transition-transform" />
+                <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateX(-50%) ${holoShift}` }} className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 opacity-20 transition-transform" />
+                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-5 transition-transform" />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 mix-blend-overlay transition-all"
+                  style={{
+                    background: `linear-gradient(${sheenAngle}deg, transparent ${sheenPos - 20}%, rgba(255,255,255,0.35) ${sheenPos}%, transparent ${sheenPos + 20}%)`,
+                  }}
+                />
               </div>
               <button
                 onClick={() => setRevealed(true)}
