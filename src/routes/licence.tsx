@@ -306,7 +306,7 @@ function LicenceTab() {
       </Field>
 
       <div className="pt-2">
-        <p className="font-semibold">{licence.type} licence details</p>
+        <div className="-mx-4 bg-muted px-4 py-2 text-sm">{licence.type} licence details</div>
         <div className="mt-3 space-y-3">
           <Field label="Licence status">
             <p className="flex items-center gap-2 text-sm">
@@ -332,7 +332,7 @@ function LicenceTab() {
       </div>
 
       <div className="pt-2">
-        <p className="font-semibold">Other details</p>
+        <div className="-mx-4 bg-muted px-4 py-2 text-sm">Other details</div>
         <div className="mt-3 space-y-3">
           <Field label="Conditions">
             {licence.conditions.length === 0 ? (
@@ -383,10 +383,14 @@ function PoliceBarcode({ seed }: { seed: string }) {
     }
     return out;
   }, [seed]);
+  
   return (
-    <div className="flex h-12 items-stretch gap-[1px]">
+    <div className="-mx-4 flex h-14 w-[calc(100%+2rem)] items-stretch bg-white">
       {bars.map((b, i) => (
-        <div key={i} style={{ width: b.w, background: b.black ? "#000" : "transparent" }} />
+        <div
+          key={i}
+          style={{ flex: `${b.w} 1 0`, background: b.black ? "#000" : "#fff" }}
+        />
       ))}
     </div>
   );
