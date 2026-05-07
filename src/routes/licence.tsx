@@ -92,38 +92,56 @@ function LicencePage() {
     }, 700);
   };
 
-  const onTouchStart = (e: React.TouchEvent) => {
+  const onPullStart = (y: number) => {
     if (window.scrollY > 0) return;
-    pullStart.current = e.touches[0].clientY;
+    pullStart.current = y;
   };
-  const onTouchMove = (e: React.TouchEvent) => {
+  const onPullMove = (y: number) => {
     if (pullStart.current == null) return;
-    const dy = e.touches[0].clientY - pullStart.current;
-    if (dy > 0) setPullY(Math.min(dy, 100));
+    const dy = y - pullStart.current;
+    if (dy > 0) setPullY(Math.min(dy, 120));
   };
-  const onTouchEnd = () => {
+  const onPullEnd = () => {
     if (pullY > 70) doRefresh();
     setPullY(0);
     pullStart.current = null;
   };
 
+  const draggingMouse = useRef(false);
+
   return (
     <AppShell>
       <div
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        style={{ transform: `translateY(${pullY * 0.4}px)`, transition: pullY ? "none" : "transform 200ms" }}
+        onTouchStart={(e) => onPullStart(e.touches[0].clientY)}
+        onTouchMove={(e) => onPullMove(e.touches[0].clientY)}
+        onTouchEnd={onPullEnd}
+        onMouseDown={(e) => { draggingMouse.current = true; onPullStart(e.clientY); }}
+        onMouseMove={(e) => { if (draggingMouse.current) onPullMove(e.clientY); }}
+        onMouseUp={() => { draggingMouse.current = false; onPullEnd(); }}
+        onMouseLeave={() => { if (draggingMouse.current) { draggingMouse.current = false; onPullEnd(); } }}
+        style={{ transform: `translateY(${pullY * 0.5}px)`, transition: pullY ? "none" : "transform 200ms" }}
       >
         <div className="flex items-center gap-2 px-5 pt-6 pb-4">
           <button onClick={() => navigate({ to: "/" })} className="rounded p-1 hover:bg-muted">
             <ChevronLeft className="h-5 w-5" />
           </button>
           <h1 className="flex-1 text-center text-base font-semibold">View details</h1>
-          <button onClick={doRefresh} className="rounded p-1 hover:bg-muted" aria-label="Refresh">
-            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-          </button>
+          <div className="w-7" />
         </div>
+
+        {(refreshing || pullY > 0) && (
+          <div className="flex justify-center py-2">
+            <div
+              className={`h-6 w-6 rounded-full border-2 border-green-600 border-t-transparent ${
+                refreshing ? "animate-spin" : ""
+              }`}
+              style={{
+                opacity: refreshing ? 1 : Math.min(pullY / 70, 1),
+                transform: refreshing ? undefined : `rotate(${pullY * 3}deg)`,
+              }}
+            />
+          </div>
+        )}
 
         <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
           {refreshing ? "Refreshing…" : <>Last refreshed: {refreshedLabel}</>}
