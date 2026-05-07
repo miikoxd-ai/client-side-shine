@@ -8,6 +8,7 @@ import { VicRoadsLogo } from "@/components/VicRoadsLogo";
 import policeBarcodeImg from "@/assets/police-barcode.avif";
 import licenceBgImg from "@/assets/licence-bg.png";
 import photoOverlayImg from "@/assets/photo-overlay.png";
+import coatOfArmsImg from "@/assets/coat_of_arms_white.png";
 import {
   useLicenceStore,
   fullName,
@@ -180,6 +181,7 @@ function LicencePage() {
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20" />
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 opacity-20" />
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 -translate-x-1/2 opacity-20" />
+                <img src={coatOfArmsImg} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-5" />
               </div>
               <button
                 onClick={() => setRevealed(true)}
