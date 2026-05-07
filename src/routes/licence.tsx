@@ -186,10 +186,10 @@ function LicencePage() {
                 className="relative flex w-[60%] flex-col items-stretch rounded-lg bg-white p-4 text-center shadow-sm"
                 aria-label="Expand QR code"
               >
-                <p className="text-sm font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
+                <p className="text-base font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
                   Check licence
                 </p>
-                <div className="relative my-2 flex flex-1 items-center justify-center">
+                <div className="relative mx-auto mt-3 flex aspect-square w-full max-w-[220px] items-center justify-center">
                   {qrDataUrl && (
                     <img
                       src={qrDataUrl}
@@ -204,7 +204,7 @@ function LicencePage() {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center justify-center gap-1.5 text-[12px] font-semibold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
+                <div className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-semibold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
                   <span>QR expires <span className="font-bold">{mm}:{ss}</span></span>
                   <Maximize2 className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
