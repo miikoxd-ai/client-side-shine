@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Maximize2, X } from "lucide-react";
 import QRCode from "qrcode";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
@@ -32,13 +32,26 @@ function LicencePage() {
   const [tab, setTab] = useState<Tab>("Licence");
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
+  const [revealed, setRevealed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [now, setNow] = useState(() => new Date());
 
   const badge = proficiencyBadge(licence.proficiency);
-  const today = new Date().toLocaleDateString("en-AU", {
+
+  // Live-updating "last refreshed" timestamp (per-minute resolution)
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const refreshedLabel = now.toLocaleString("en-AU", {
     weekday: "short",
     day: "2-digit",
     month: "short",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
 
   // Static QR payload — same code every time, derived from licence number only.
@@ -48,17 +61,18 @@ function LicencePage() {
   );
 
   useEffect(() => {
-    QRCode.toDataURL(qrPayload, { width: 320, margin: 1 }).then(setQrDataUrl);
+    QRCode.toDataURL(qrPayload, { width: 480, margin: 1 }).then(setQrDataUrl);
   }, [qrPayload]);
 
-  // Countdown loop (display only — does not refresh QR)
+  // Countdown loop (display only — does not refresh QR). Resets when revealed.
   useEffect(() => {
+    if (!revealed) return;
     setRemaining(QR_TTL);
     const id = setInterval(() => {
       setRemaining((r) => (r <= 1 ? QR_TTL : r - 1));
     }, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [revealed]);
 
   const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
   const ss = String(remaining % 60).padStart(2, "0");
@@ -74,7 +88,7 @@ function LicencePage() {
       </div>
 
       <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
-        Last refreshed: {today}
+        Last refreshed: {refreshedLabel}
       </p>
 
       <div>
@@ -85,8 +99,14 @@ function LicencePage() {
           </div>
           <VicRoadsLogo size={28} />
         </div>
-        <div className="bg-green-100 p-4">
-          <div className="grid grid-cols-2 gap-3">
+        <div
+          className="relative bg-green-100 p-4"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(-30deg, rgba(220,38,38,0.10) 0 2px, transparent 2px 14px), radial-gradient(circle at 20% 30%, rgba(220,38,38,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(220,38,38,0.08), transparent 45%)",
+          }}
+        >
+          <div className="relative grid grid-cols-2 gap-3">
             <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
               {licence.photoUrl ? (
                 <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
@@ -96,12 +116,41 @@ function LicencePage() {
                 </svg>
               )}
             </div>
-            <div className="flex aspect-square w-full flex-col items-center justify-between rounded-lg bg-white p-2">
-              <p className="text-xs font-semibold text-foreground">Check licence</p>
-              {qrDataUrl && <img src={qrDataUrl} alt="Licence QR code" className="min-h-0 flex-1 object-contain" />}
-              <p className="text-xs text-foreground">
-                QR expires <span className="font-semibold">{mm}:{ss}</span>
-              </p>
+            <div className="flex aspect-square w-full flex-col rounded-lg bg-white p-3">
+              {!revealed ? (
+                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                  <p className="text-[11px] leading-snug text-foreground">
+                    Presenting a QR code allows your driver licence information to be scanned and shared.
+                  </p>
+                  <p className="mt-2 text-xs font-bold text-foreground">
+                    Do you consent to share your information?
+                  </p>
+                  <button
+                    onClick={() => setRevealed(true)}
+                    className="mt-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+                  >
+                    Reveal QR code
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setExpanded(true)}
+                    className="flex items-center justify-between text-xs font-semibold text-foreground"
+                  >
+                    <span>Check licence</span>
+                    <Maximize2 className="h-3.5 w-3.5" />
+                  </button>
+                  {qrDataUrl && (
+                    <button onClick={() => setExpanded(true)} className="min-h-0 flex-1">
+                      <img src={qrDataUrl} alt="Licence QR code" className="h-full w-full object-contain" />
+                    </button>
+                  )}
+                  <p className="text-xs text-foreground">
+                    QR expires <span className="font-semibold">{mm}:{ss}</span>
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -126,6 +175,29 @@ function LicencePage() {
         {tab === "Identity" && <IdentityTab />}
         {tab === "Age" && <AgeTab />}
       </div>
+
+      {expanded && (
+        <div
+          onClick={() => setExpanded(false)}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-6"
+        >
+          <button
+            onClick={() => setExpanded(false)}
+            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {qrDataUrl && (
+            <img
+              src={qrDataUrl}
+              alt="Licence QR code"
+              onClick={(e) => e.stopPropagation()}
+              className="h-auto w-full max-w-sm rounded-lg bg-white p-4"
+            />
+          )}
+        </div>
+      )}
     </AppShell>
   );
 }
