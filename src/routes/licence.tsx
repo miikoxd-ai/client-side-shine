@@ -86,20 +86,20 @@ function LicencePage() {
           <VicRoadsLogo size={28} />
         </div>
         <div className="bg-green-100 p-4">
-          <div className="flex gap-3">
-            <div className="flex h-32 w-28 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
               {licence.photoUrl ? (
                 <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
               ) : (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-muted-foreground">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-muted-foreground">
                   <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                 </svg>
               )}
             </div>
-            <div className="flex flex-1 flex-col items-center justify-between rounded-lg bg-white p-2">
-              <p className="text-[11px] font-semibold text-foreground">Check licence</p>
-              {qrDataUrl && <img src={qrDataUrl} alt="Licence QR code" className="h-24 w-24" />}
-              <p className="text-[11px] text-foreground">
+            <div className="flex aspect-square w-full flex-col items-center justify-between rounded-lg bg-white p-2">
+              <p className="text-xs font-semibold text-foreground">Check licence</p>
+              {qrDataUrl && <img src={qrDataUrl} alt="Licence QR code" className="min-h-0 flex-1 object-contain" />}
+              <p className="text-xs text-foreground">
                 QR expires <span className="font-semibold">{mm}:{ss}</span>
               </p>
             </div>
