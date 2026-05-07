@@ -48,8 +48,8 @@ function LicencePage() {
   const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
-  const tilt = useDeviceTilt(12);
-  const holoShift = `translate(${tilt.x * 14}px, ${tilt.y * 14}px)`;
+  const tilt = useDeviceTilt(14);
+  const holoShift = `translate(${tilt.x * 11.9}px, ${tilt.y * 11.9}px)`;
   const sheenAngle = 90 + tilt.x * 60;
   const sheenPos = 50 + tilt.x * 40;
 
