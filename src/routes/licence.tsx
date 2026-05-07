@@ -33,7 +33,7 @@ function LicencePage() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
   const [revealed, setRevealed] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  
   const [now, setNow] = useState(() => new Date());
 
   const badge = proficiencyBadge(licence.proficiency);
