@@ -1,68 +1,76 @@
+## Goal
 
-# VicState ID App Clone
+Bring `/licence` in line with the two official DDL "what to look for" / "how to check" guides. Matches the reference screenshot (Madeline Citizen) exactly in structure.
 
-Recreate the Victorian digital driver licence app shown at vicstate-id-app.base44.app, including the hidden "double-click the logo to edit licence details" admin feature.
+## Changes
 
-## Screens & routes
+### 1. `src/store/licence.ts` — extend Licence model
+- Add `cardNumber: string` (e.g. `"A1234567B"`).
+- Add `licenceStatus: "Current" | "Expired" | "Suspended"`.
+- Add `issueDate: string` (ISO).
+- Add `conditions: string[]` (e.g. `["A", "I"]`).
+- Map letter → label in a helper: `A → Automatic transmission`, `I → Alcohol interlock device`, `B → Bioptic telescopic lens`, `S → Special` (small built-in dictionary).
+- Defaults populated for John Citizen.
+- Add to `EditLicenceDialog` only if it already covers similar fields (otherwise leave untouched — out of scope).
 
+### 2. `src/routes/licence.tsx` — Licence tab restructure
+Match the reference layout below the green hero:
+
+```text
+MADELINE CITIZEN
+Licence number       Expiry
+Licence type         Date of birth
+Address
+Signature
+─────────────
+Car licence details
+  Licence status   ✓ Current   (green tick)
+  Proficiency      Full
+  Issue date       20 May 2020
+  Expiry           20 May 2030
+─────────────
+Other details
+  Conditions
+    A  Automatic transmission
+    I  Alcohol interlock device
+  Card number
+    ••••••••  👁  ← tap to reveal real number
+  Victoria Police barcode
+    ▮▯▮▯▮▯▮▯ (CSS-rendered Code 128-style stripes)
 ```
-/            -> Passcode gate (create on first run, enter thereafter) → Home
-/vehicles    -> Registered vehicles
-/licence     -> Licence "View details" with Licence/Identity/Age tabs + QR reveal
-/payments    -> Payments (empty state)
-/profile     -> Profile summary
-```
 
-Shared bottom tab bar on Home, Vehicles, Licence, Payments, Profile. Mobile-first centered column (~420px max width) on a light grey background.
+- Card-number row uses `useState` for visibility; eye icon (lucide `Eye` / `EyeOff`).
+- Police barcode rendered as a div of randomly-generated black bars (deterministic from licence number) — not a real barcode, just visual.
 
-## Home screen
-- Header: VicRoads logo (small green chevron) + "Hi {firstName}".
-- Cards: "Demerit point balance" and "Registered vehicles".
-- Bottom dark card "My licence — Tap to view licence" → `/licence`.
+### 3. Identity tab — match guide
+Per "How-to" guide, Identity = **photo + full name + address + signature only** (no DOB).
+- Render large photo on left, name as heading, address, signature image. Remove DOB from this tab.
 
-## Licence screen (`/licence`)
-- Red banner: "PROBATIONARY DRIVER LICENCE / Victoria Australia".
-- Photo placeholder + consent panel with **Reveal QR code** button.
-- Tabs: **Licence** (full details + Car learner permit block), **Identity** (name/DOB/address), **Age** (computed from DOB, big number in green card).
-- **Reveal QR code** → modal with a generated QR (encodes a JSON payload of the shared fields), a live 2-minute countdown, and the bullet list of what's being shared.
+### 4. Age tab — match guide
+Per guide, Age = **photo + "Over 18" / "Under 18" status only**, no DOB or exact age.
+- Remove DOB field and giant age number.
+- Show photo + a green pill `✓ Over 18` (or red `Under 18`).
 
-## Demerit / Vehicles / Payments / Profile
-- Demerit detail page: current balance / 12, info block, status message.
-- Vehicles: list + "Add vehicle" (opens dialog to add rego, make, model, year).
-- Payments: empty state icon + copy.
-- Profile: avatar, name, "Car Licence holder", and the same licence fields (wired to the same store so they stay in sync — fixing the bug noticed in the original).
+### 5. Hero card — hologram shimmer
+Add a subtle animated Victorian Coat-of-Arms-style hologram overlay on the photo:
+- Absolutely-positioned `div` over photo with a conic/linear gradient + `mix-blend-overlay`, animated with `@keyframes shimmer` (translate + hue rotate, 4s loop).
+- A faint SVG crown/shield watermark centred on the photo at ~25% opacity.
+- Pure CSS, no asset.
 
-## Hidden edit mode (the requested feature)
-- Double-clicking the VicRoads logo (anywhere it appears — Home header is the primary spot) opens an **Edit Licence Details** dialog.
-- Form fields: First name, Middle initial, Last name, Licence number, Licence type (Car/Motorcycle/Heavy), Proficiency (Full / Probationary P1 / Probationary P2 / Learner), DOB, Expiry, Address (street, suburb, state, postcode), Permit status, Permit issue date, Photo URL (optional), Signature data URL (optional), Demerit points, Vehicles list.
-- Save persists to the store; all screens (Home greeting, Licence card colour/label, Identity, Age, Profile, QR payload) update immediately.
-- Reset button to restore default "John Citizen" sample data.
-- The licence banner colour + "P" badge derive from proficiency (Full = green, P1 = red, P2 = green, Learner = yellow), matching the original's visual language.
+### 6. Pull-to-refresh
+- On the scroll container, detect `touchstart` / `touchmove` when `scrollTop === 0`; if pulled > 70px and released, trigger refresh:
+  - Briefly show a spinner under the header ("Refreshing…").
+  - After 600 ms, set `now = new Date()` and toast "Licence refreshed".
+- Desktop fallback: small refresh icon button next to "Last refreshed:" label.
 
-## Data & persistence
-- Single Zustand store (`useLicenceStore`) holding the licence object + passcode hash + unlock state.
-- Persisted to `localStorage` so refresh keeps the passcode and edits.
-- Passcode stored as a SHA-256 hash (Web Crypto), not plaintext.
-- Age is derived from DOB at render time.
-- QR payload is `JSON.stringify({ name, dob, address, licenceNumber, type, expiry, status, proficiency, issuedAt: Date.now() })` rendered with the `qrcode` npm package; expires after 120s and the modal auto-closes.
+### 7. Last-refreshed timestamp format
+Already updates per second; keep current `en-AU` formatter — no change needed.
 
-## Technical details
+## Out of scope
+- Bottom nav (already fixed previously).
+- QR reveal sheet (already implemented).
+- Editing flows for the new fields beyond sensible defaults.
 
-Stack: TanStack Start (existing), Tailwind v4, shadcn/ui (Dialog, Tabs, Button, Input, Select, Card already present).
-
-New files:
-- `src/routes/index.tsx` — passcode gate + home (replaces placeholder).
-- `src/routes/licence.tsx`, `src/routes/vehicles.tsx`, `src/routes/payments.tsx`, `src/routes/profile.tsx`, `src/routes/demerit.tsx`.
-- `src/components/BottomNav.tsx` — shared tab bar with TanStack `<Link>`s.
-- `src/components/VicRoadsLogo.tsx` — logo with `onDoubleClick` to open edit dialog.
-- `src/components/EditLicenceDialog.tsx` — form dialog driven by the store.
-- `src/components/QrRevealDialog.tsx` — QR + countdown.
-- `src/components/PasscodeKeypad.tsx` — 4-dot indicator + 3×4 numeric pad.
-- `src/store/licence.ts` — Zustand store with persist middleware.
-- `src/lib/passcode.ts` — hash helper.
-
-Dependencies to add: `zustand`, `qrcode`, `@types/qrcode`.
-
-Each route sets its own `head()` (title/description/og) per the route-architecture rules. The hidden edit feature works on every screen because the logo component is reused.
-
-Defaults match the original sample: John M Citizen, licence 012345678, DOB 20 Nov 2000, expiry 10 Dec 2026, 180 Lonsdale St Melbourne VIC 3000, Car / Probationary, 0 demerit points, no vehicles.
+## Files touched
+- `src/store/licence.ts` — model + defaults + condition-label helper.
+- `src/routes/licence.tsx` — Licence/Identity/Age tabs, hologram, pull-to-refresh, card-number eye toggle, police barcode.

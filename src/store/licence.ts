@@ -31,6 +31,10 @@ export type Licence = {
   signatureUrl?: string;
   demeritPoints: number;
   vehicles: Vehicle[];
+  cardNumber: string;
+  licenceStatus: "Current" | "Expired" | "Suspended";
+  issueDate: string; // ISO
+  conditions: string[];
 };
 
 const DEFAULT_LICENCE: Licence = {
@@ -50,7 +54,23 @@ const DEFAULT_LICENCE: Licence = {
   permitIssueDate: "2025-10-02",
   demeritPoints: 0,
   vehicles: [],
+  cardNumber: "G7421953K",
+  licenceStatus: "Current",
+  issueDate: "2018-12-10",
+  conditions: [],
 };
+
+const CONDITION_LABELS: Record<string, string> = {
+  A: "Automatic transmission",
+  I: "Alcohol interlock device",
+  B: "Bioptic telescopic lens",
+  S: "Special",
+  M: "Modified controls",
+};
+
+export function conditionLabel(letter: string) {
+  return CONDITION_LABELS[letter.toUpperCase()] ?? "Other condition";
+}
 
 type State = {
   licence: Licence;
