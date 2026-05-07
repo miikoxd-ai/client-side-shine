@@ -48,8 +48,8 @@ function LicencePage() {
   const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
-  const tilt = useDeviceTilt(25);
-  const holoShift = `translate(${tilt.x * 6}px, ${tilt.y * 6}px)`;
+  const tilt = useDeviceTilt(12);
+  const holoShift = `translate(${tilt.x * 14}px, ${tilt.y * 14}px)`;
   const sheenAngle = 90 + tilt.x * 60;
   const sheenPos = 50 + tilt.x * 40;
 
@@ -186,7 +186,7 @@ function LicencePage() {
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20" />
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 opacity-20" />
                 <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 -translate-x-1/2 opacity-20" />
-                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift, opacity: 0.08 }} className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-transform" />
+                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift, opacity: 0.09 }} className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-transform" />
               </div>
               <button
                 onClick={() => setRevealed(true)}
