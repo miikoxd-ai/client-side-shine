@@ -184,6 +184,8 @@ function LicencePage() {
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                   </svg>
                 )}
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 h-12 w-12 -translate-y-1/2" style={{ top: "33.333%" }} />
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 h-12 w-12 -translate-y-1/2" style={{ top: "66.666%" }} />
               </div>
               <button
                 onClick={() => setRevealed(true)}
