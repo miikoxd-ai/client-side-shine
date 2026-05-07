@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
+import policeBarcodeImg from "@/assets/police-barcode.avif";
 import {
   useLicenceStore,
   fullName,
@@ -384,27 +385,14 @@ function LicenceTab() {
   );
 }
 
-function PoliceBarcode({ seed }: { seed: string }) {
-  // Deterministic pseudo-random bar widths from seed
-  const bars = useMemo(() => {
-    let h = 0;
-    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) & 0xffffffff;
-    const out: { w: number; black: boolean }[] = [];
-    for (let i = 0; i < 70; i++) {
-      h = (h * 1103515245 + 12345) & 0x7fffffff;
-      out.push({ w: 1 + (h % 4), black: i % 2 === 0 });
-    }
-    return out;
-  }, [seed]);
-  
+function PoliceBarcode({ seed: _seed }: { seed: string }) {
   return (
-    <div className="-mx-4 flex h-14 w-[calc(100%+2rem)] items-stretch bg-white">
-      {bars.map((b, i) => (
-        <div
-          key={i}
-          style={{ flex: `${b.w} 1 0`, background: b.black ? "#000" : "#fff" }}
-        />
-      ))}
+    <div className="-mx-4 w-[calc(100%+2rem)] bg-white">
+      <img
+        src={policeBarcodeImg}
+        alt="Victoria Police barcode"
+        className="h-14 w-full object-cover"
+      />
     </div>
   );
 }
