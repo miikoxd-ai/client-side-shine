@@ -184,9 +184,9 @@ function LicencePage() {
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                   </svg>
                 )}
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-[53px] w-[53px] opacity-10" />
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1 h-[53px] w-[53px] opacity-10" />
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-[53px] w-[53px] -translate-y-1/2 opacity-10" />
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-[80px] w-[80px] opacity-15" />
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1 h-[80px] w-[80px] opacity-15" />
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-[80px] w-[80px] -translate-y-1/2 opacity-15" />
               </div>
               <button
                 onClick={() => setRevealed(true)}
