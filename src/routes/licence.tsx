@@ -161,7 +161,7 @@ function LicencePage() {
             <VicRoadsLogo size={28} />
           </div>
           <div
-            className="relative flex items-stretch bg-green-100 px-4 pb-4 pt-0"
+            className="relative flex items-stretch bg-green-100 p-4"
             style={{
               backgroundImage: `url(${licenceBgImg})`,
               backgroundSize: "cover",
@@ -169,7 +169,7 @@ function LicencePage() {
             }}
           >
             <div className="relative grid w-full grid-cols-2 items-stretch gap-3">
-              <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-b-lg bg-muted">
+              <div className="relative flex h-full min-h-[220px] w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
