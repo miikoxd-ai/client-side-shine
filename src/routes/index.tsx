@@ -78,7 +78,7 @@ function IndexPage() {
     return (
       <PasscodeKeypad
         title="Enter Passcode"
-        subtitle="Unlock your licence"
+        subtitle="Enter your 4-digit passcode to continue"
         value={code}
         error={error}
         onChange={async (v) => {
@@ -88,7 +88,7 @@ function IndexPage() {
             const h = await hashPasscode(v);
             if (h === passcodeHash) setUnlocked(true);
             else {
-              setError("Incorrect passcode");
+              setError("Incorrect passcode. Try again.");
               setCode("");
             }
           }
