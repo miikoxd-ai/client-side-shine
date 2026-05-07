@@ -39,6 +39,7 @@ function LicencePage() {
   const [now, setNow] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [pullY, setPullY] = useState(0);
+  const [refreshNonce, setRefreshNonce] = useState(0);
   const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
@@ -62,8 +63,8 @@ function LicencePage() {
     : "";
 
   const qrPayload = useMemo(
-    () => `VICROADS:LICENCE:${licence.licenceNumber}`,
-    [licence.licenceNumber],
+    () => `VICROADS:LICENCE:${licence.licenceNumber}:${refreshNonce}`,
+    [licence.licenceNumber, refreshNonce],
   );
 
   useEffect(() => {
@@ -86,9 +87,11 @@ function LicencePage() {
     setRefreshing(true);
     setTimeout(() => {
       setNow(new Date());
+      setRefreshNonce((n) => n + 1);
+      setRemaining(QR_TTL);
       setRefreshing(false);
       toast.success("Licence refreshed");
-    }, 700);
+    }, 900);
   };
 
   const onPullStart = (y: number) => {
@@ -174,15 +177,25 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
+                className="relative flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
                 aria-label="Expand QR code"
               >
                 {qrDataUrl && (
-                  <img src={qrDataUrl} alt="Licence QR code" className="h-full w-full object-contain" />
+                  <img
+                    src={qrDataUrl}
+                    alt="Licence QR code"
+                    className="h-full w-full object-contain transition-opacity"
+                    style={{ opacity: refreshing ? 0.3 : 1 }}
+                  />
                 )}
-                <p className="mt-1 text-[11px] font-semibold text-foreground">
+                <p className="mt-1 text-[11px] font-semibold text-foreground" style={{ opacity: refreshing ? 0.3 : 1 }}>
                   QR expires <span className="font-bold">{mm}:{ss}</span>
                 </p>
+                {refreshing && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
+                  </div>
+                )}
               </button>
             </div>
           </div>
