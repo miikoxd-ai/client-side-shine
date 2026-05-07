@@ -20,18 +20,23 @@ export const Route = createFileRoute("/")({
 function IndexPage() {
   const passcodeHash = useLicenceStore((s) => s.passcodeHash);
   const unlocked = useLicenceStore((s) => s.unlocked);
+  const hasHydrated = useLicenceStore((s) => s.hasHydrated);
   const setUnlocked = useLicenceStore((s) => s.setUnlocked);
   const setPasscodeHash = useLicenceStore((s) => s.setPasscodeHash);
 
-  const [step, setStep] = useState<"create" | "confirm" | "enter">(() =>
-    passcodeHash ? "enter" : "create",
-  );
+  const [step, setStep] = useState<"create" | "confirm" | "enter">("create");
   const [first, setFirst] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  // Don't render passcode UI until persisted state has rehydrated from localStorage,
+  // otherwise iOS PWA / SSR shows "Create Passcode" even when a hash already exists.
+  if (!hasHydrated) return null;
+
+  const activeStep: "create" | "confirm" | "enter" = passcodeHash ? "enter" : step;
+
   if (!unlocked) {
-    if (step === "create") {
+    if (activeStep === "create") {
       return (
         <PasscodeKeypad
           title="Create Passcode"
