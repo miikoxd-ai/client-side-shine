@@ -39,6 +39,7 @@ function LicencePage() {
   const [now, setNow] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [pullY, setPullY] = useState(0);
+  const [refreshNonce, setRefreshNonce] = useState(0);
   const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
@@ -62,8 +63,8 @@ function LicencePage() {
     : "";
 
   const qrPayload = useMemo(
-    () => `VICROADS:LICENCE:${licence.licenceNumber}`,
-    [licence.licenceNumber],
+    () => `VICROADS:LICENCE:${licence.licenceNumber}:${refreshNonce}`,
+    [licence.licenceNumber, refreshNonce],
   );
 
   useEffect(() => {
@@ -86,9 +87,11 @@ function LicencePage() {
     setRefreshing(true);
     setTimeout(() => {
       setNow(new Date());
+      setRefreshNonce((n) => n + 1);
+      setRemaining(QR_TTL);
       setRefreshing(false);
       toast.success("Licence refreshed");
-    }, 700);
+    }, 900);
   };
 
   const onPullStart = (y: number) => {
