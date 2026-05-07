@@ -1,10 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft } from "lucide-react";
+import QRCode from "qrcode";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
-import { QrRevealDialog } from "@/components/QrRevealDialog";
-import { Button } from "@/components/ui/button";
 import {
   useLicenceStore,
   fullName,
@@ -25,11 +24,14 @@ export const Route = createFileRoute("/licence")({
 
 type Tab = "Licence" | "Identity" | "Age";
 
+const QR_TTL = 120;
+
 function LicencePage() {
   const licence = useLicenceStore((s) => s.licence);
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("Licence");
-  const [qrOpen, setQrOpen] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [remaining, setRemaining] = useState(QR_TTL);
 
   const badge = proficiencyBadge(licence.proficiency);
   const today = new Date().toLocaleDateString("en-AU", {
@@ -39,6 +41,28 @@ function LicencePage() {
     year: "numeric",
   });
 
+  // Static QR payload — same code every time, derived from licence number only.
+  const qrPayload = useMemo(
+    () => `VICROADS:LICENCE:${licence.licenceNumber}`,
+    [licence.licenceNumber],
+  );
+
+  useEffect(() => {
+    QRCode.toDataURL(qrPayload, { width: 320, margin: 1 }).then(setQrDataUrl);
+  }, [qrPayload]);
+
+  // Countdown loop (display only — does not refresh QR)
+  useEffect(() => {
+    setRemaining(QR_TTL);
+    const id = setInterval(() => {
+      setRemaining((r) => (r <= 1 ? QR_TTL : r - 1));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
+  const ss = String(remaining % 60).padStart(2, "0");
+
   return (
     <AppShell>
       <div className="flex items-center gap-2 px-5 pt-6 pb-4">
@@ -46,7 +70,7 @@ function LicencePage() {
           <ChevronLeft className="h-5 w-5" />
         </button>
         <h1 className="flex-1 text-center text-base font-semibold">View details</h1>
-        <VicRoadsLogo size={28} />
+        <div className="w-7" />
       </div>
 
       <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
@@ -54,34 +78,30 @@ function LicencePage() {
       </p>
 
       <div className="mx-5">
-        <div className={`rounded-t-2xl px-5 py-4 text-white ${badge.color}`}>
-          <p className="font-bold tracking-wide">{badge.label}</p>
-          <p className="text-xs opacity-90">Victoria Australia</p>
+        <div className={`flex items-center justify-between rounded-t-2xl px-4 py-3 text-white ${badge.color}`}>
+          <div>
+            <p className="text-sm font-bold tracking-wide">{badge.label}</p>
+            <p className="text-[11px] opacity-90">Victoria Australia</p>
+          </div>
+          <VicRoadsLogo size={28} />
         </div>
-        <div className="rounded-b-2xl bg-green-50 p-4">
+        <div className="rounded-b-2xl bg-green-100 p-3">
           <div className="flex gap-3">
-            <div className="flex h-32 w-28 flex-col items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
+            <div className="flex h-32 w-28 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
               {licence.photoUrl ? (
-                <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full rounded-lg object-cover" />
+                <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
               ) : (
-                <>
-                  <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-muted-foreground/20">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
-                    </svg>
-                  </div>
-                  No photo
-                </>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-muted-foreground">
+                  <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
+                </svg>
               )}
             </div>
-            <div className="flex-1 text-xs text-foreground">
-              <p>
-                Presenting a QR code allows your driver licence information to be scanned and shared.
+            <div className="flex flex-1 flex-col items-center justify-between rounded-lg bg-white p-2">
+              <p className="text-[11px] font-semibold text-foreground">Check licence</p>
+              {qrDataUrl && <img src={qrDataUrl} alt="Licence QR code" className="h-24 w-24" />}
+              <p className="text-[11px] text-foreground">
+                QR expires <span className="font-semibold">{mm}:{ss}</span>
               </p>
-              <p className="mt-2 font-semibold">Do you consent to share your information?</p>
-              <Button onClick={() => setQrOpen(true)} className="mt-2 w-full bg-slate-900 hover:bg-slate-800">
-                Reveal QR code
-              </Button>
             </div>
           </div>
         </div>
@@ -106,8 +126,6 @@ function LicencePage() {
         {tab === "Identity" && <IdentityTab />}
         {tab === "Age" && <AgeTab />}
       </div>
-
-      <QrRevealDialog open={qrOpen} onOpenChange={setQrOpen} />
     </AppShell>
   );
 }
