@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, Eye, EyeOff, Check } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Check, Maximize2 } from "lucide-react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
@@ -199,6 +199,7 @@ function LicencePage() {
                 )}
               </button>
             </div>
+            <Maximize2 className="absolute bottom-2 right-2 h-5 w-5 text-slate-900" strokeWidth={2.5} />
           </div>
         </div>
 
