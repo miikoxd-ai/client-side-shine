@@ -71,13 +71,12 @@ function LicencePage() {
   }, [qrPayload]);
 
   useEffect(() => {
-    if (!revealed) return;
     setRemaining(QR_TTL);
     const id = setInterval(() => {
       setRemaining((r) => (r <= 1 ? QR_TTL : r - 1));
     }, 1000);
     return () => clearInterval(id);
-  }, [revealed]);
+  }, []);
 
   const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
   const ss = String(remaining % 60).padStart(2, "0");
