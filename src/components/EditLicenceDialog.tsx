@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLicenceStore, type Licence, type Proficiency, type LicenceType } from "@/store/licence";
+import { PhotoUpload } from "./PhotoUpload";
 
 export function EditLicenceDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const licence = useLicenceStore((s) => s.licence);
@@ -112,8 +113,11 @@ export function EditLicenceDialog({ open, onOpenChange }: { open: boolean; onOpe
             />
           </Field>
 
-          <Field label="Photo URL (optional)" full>
-            <Input value={draft.photoUrl ?? ""} onChange={(e) => update("photoUrl", e.target.value)} />
+          <Field label="Photo" full>
+            <PhotoUpload label="Licence photo" value={draft.photoUrl} onChange={(v) => update("photoUrl", v)} aspect="portrait" />
+          </Field>
+          <Field label="Signature" full>
+            <PhotoUpload label="Signature image" value={draft.signatureUrl} onChange={(v) => update("signatureUrl", v)} aspect="wide" />
           </Field>
         </div>
 

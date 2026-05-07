@@ -38,17 +38,38 @@ function VehiclesPage() {
 
       <div className="space-y-3 px-5">
         {vehicles.length === 0 && (
-          <p className="py-10 text-center text-sm text-muted-foreground">No vehicles registered yet.</p>
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <Plus className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="mt-3 text-sm font-semibold">No vehicles registered</p>
+            <p className="mt-1 text-xs text-muted-foreground">Add a vehicle to manage its registration here.</p>
+          </div>
         )}
         {vehicles.map((v) => (
-          <div key={v.id} className="flex items-center justify-between rounded-xl border border-border p-4">
-            <div>
-              <p className="font-semibold">{v.rego}</p>
-              <p className="text-sm text-muted-foreground">{v.year} {v.make} {v.model}</p>
+          <div key={v.id} className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-lg font-bold tracking-wider">{v.rego}</p>
+                <p className="text-sm text-muted-foreground">{v.year} {v.make} {v.model}</p>
+              </div>
+              <button onClick={() => removeVehicle(v.id)} className="text-muted-foreground hover:text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </button>
             </div>
-            <button onClick={() => removeVehicle(v.id)} className="text-muted-foreground hover:text-destructive">
-              <Trash2 className="h-4 w-4" />
-            </button>
+            <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border pt-3 text-xs">
+              <div>
+                <p className="text-muted-foreground">Status</p>
+                <p className="mt-0.5 flex items-center gap-1.5 font-medium">
+                  <span className="inline-block h-2 w-2 rounded-full bg-green-600" />
+                  Registered
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Renewal due</p>
+                <p className="mt-0.5 font-medium">15 Aug 2026</p>
+              </div>
+            </div>
           </div>
         ))}
         <button

@@ -128,6 +128,14 @@ function LicenceTab() {
         <p className="whitespace-pre-line text-sm">{fullAddress(licence)}</p>
       </Field>
 
+      <Field label="Signature">
+        {licence.signatureUrl ? (
+          <img src={licence.signatureUrl} alt="Signature" className="h-16 object-contain" />
+        ) : (
+          <p className="text-sm italic text-muted-foreground">No signature on file</p>
+        )}
+      </Field>
+
       {licence.proficiency !== "Full" && (
         <div className="mt-6 rounded-xl bg-muted/60 p-4">
           <p className="font-semibold">{licence.type} learner permit details</p>
