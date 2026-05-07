@@ -183,26 +183,31 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="relative flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
+                className="relative flex w-full flex-col items-stretch justify-between rounded-lg bg-white p-3 text-center"
                 aria-label="Expand QR code"
               >
-                {qrDataUrl && (
-                  <img
-                    src={qrDataUrl}
-                    alt="Licence QR code"
-                    className="h-full w-full object-contain transition-opacity"
-                    style={{ opacity: refreshing ? 0.3 : 1 }}
-                  />
-                )}
-                <p className="mt-1 text-[11px] font-semibold text-foreground" style={{ opacity: refreshing ? 0.3 : 1 }}>
-                  QR expires <span className="font-bold">{mm}:{ss}</span>
+                <p className="text-sm font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
+                  Check licence
                 </p>
-                {refreshing && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
-                  </div>
-                )}
-                <Maximize2 className="absolute bottom-2 right-2 h-5 w-5 text-slate-900" strokeWidth={2.5} />
+                <div className="relative my-2 flex flex-1 items-center justify-center">
+                  {qrDataUrl && (
+                    <img
+                      src={qrDataUrl}
+                      alt="Licence QR code"
+                      className="h-full w-full object-contain transition-opacity"
+                      style={{ opacity: refreshing ? 0.3 : 1 }}
+                    />
+                  )}
+                  {refreshing && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-center gap-1.5 text-[12px] font-semibold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
+                  <span>QR expires <span className="font-bold">{mm}:{ss}</span></span>
+                  <Maximize2 className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </div>
               </button>
             </div>
           </div>
