@@ -383,7 +383,7 @@ function PoliceBarcode({ seed }: { seed: string }) {
     }
     return out;
   }, [seed]);
-  const total = bars.reduce((s, b) => s + b.w, 0);
+  
   return (
     <div className="-mx-4 flex h-14 w-[calc(100%+2rem)] items-stretch bg-white">
       {bars.map((b, i) => (
