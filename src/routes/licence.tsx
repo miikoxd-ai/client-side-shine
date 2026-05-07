@@ -177,15 +177,25 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
+                className="relative flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
                 aria-label="Expand QR code"
               >
                 {qrDataUrl && (
-                  <img src={qrDataUrl} alt="Licence QR code" className="h-full w-full object-contain" />
+                  <img
+                    src={qrDataUrl}
+                    alt="Licence QR code"
+                    className="h-full w-full object-contain transition-opacity"
+                    style={{ opacity: refreshing ? 0.3 : 1 }}
+                  />
                 )}
-                <p className="mt-1 text-[11px] font-semibold text-foreground">
+                <p className="mt-1 text-[11px] font-semibold text-foreground" style={{ opacity: refreshing ? 0.3 : 1 }}>
                   QR expires <span className="font-bold">{mm}:{ss}</span>
                 </p>
+                {refreshing && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
+                  </div>
+                )}
               </button>
             </div>
           </div>
