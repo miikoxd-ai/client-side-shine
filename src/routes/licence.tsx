@@ -161,15 +161,15 @@ function LicencePage() {
             <VicRoadsLogo size={28} />
           </div>
           <div
-            className="relative flex items-center bg-green-100 px-4 py-6"
+            className="relative flex items-center bg-green-100 px-5 py-5"
             style={{
               backgroundImage: `url(${licenceBgImg})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           >
-            <div className="relative flex w-full items-stretch justify-between gap-6">
-              <div className="relative flex aspect-[4/5] w-[38%] items-center justify-center overflow-hidden rounded-lg bg-muted shadow-sm">
+            <div className="relative flex w-full items-stretch gap-4">
+              <div className="relative flex aspect-[4/5] w-[40%] items-center justify-center overflow-hidden rounded-lg bg-muted shadow-sm">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
