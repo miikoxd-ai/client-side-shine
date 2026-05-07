@@ -12,7 +12,7 @@ const tabs = [
 export function BottomNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background">
       <div className="mx-auto flex max-w-[440px] items-center justify-between px-2 py-2">
         {tabs.map((t) => {
           const Icon = t.icon;
