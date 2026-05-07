@@ -113,6 +113,14 @@ export const useLicenceStore = create<State>()(
     {
       name: "vicstate-id",
       partialize: (s) => ({ licence: s.licence, passcodeHash: s.passcodeHash }),
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<State>;
+        return {
+          ...current,
+          ...p,
+          licence: { ...DEFAULT_LICENCE, ...(p.licence ?? {}) },
+        };
+      },
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
