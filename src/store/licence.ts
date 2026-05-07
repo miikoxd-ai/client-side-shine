@@ -76,12 +76,14 @@ type State = {
   licence: Licence;
   passcodeHash: string | null;
   unlocked: boolean;
+  hasHydrated: boolean;
   setLicence: (l: Partial<Licence>) => void;
   resetLicence: () => void;
   addVehicle: (v: Omit<Vehicle, "id">) => void;
   removeVehicle: (id: string) => void;
   setPasscodeHash: (h: string) => void;
   setUnlocked: (u: boolean) => void;
+  setHasHydrated: (h: boolean) => void;
 };
 
 export const useLicenceStore = create<State>()(
@@ -90,6 +92,7 @@ export const useLicenceStore = create<State>()(
       licence: DEFAULT_LICENCE,
       passcodeHash: null,
       unlocked: false,
+      hasHydrated: false,
       setLicence: (l) => set((s) => ({ licence: { ...s.licence, ...l } })),
       resetLicence: () => set({ licence: DEFAULT_LICENCE }),
       addVehicle: (v) =>
@@ -105,10 +108,14 @@ export const useLicenceStore = create<State>()(
         })),
       setPasscodeHash: (h) => set({ passcodeHash: h }),
       setUnlocked: (u) => set({ unlocked: u }),
+      setHasHydrated: (h) => set({ hasHydrated: h }),
     }),
     {
       name: "vicstate-id",
       partialize: (s) => ({ licence: s.licence, passcodeHash: s.passcodeHash }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );
