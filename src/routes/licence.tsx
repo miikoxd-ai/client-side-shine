@@ -168,8 +168,8 @@ function LicencePage() {
               backgroundPosition: "center",
             }}
           >
-            <div className="relative mx-auto flex w-full max-w-[420px] items-stretch justify-between gap-6">
-              <div className="relative flex h-full min-h-[180px] w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
+            <div className="relative flex w-full items-stretch justify-between gap-3 px-2">
+              <div className="relative flex h-full min-h-[180px] w-[42%] items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
