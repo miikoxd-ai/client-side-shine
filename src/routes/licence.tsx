@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, Eye, EyeOff, RefreshCw, Check } from "lucide-react";
 import QRCode from "qrcode";
+import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
 import {
@@ -10,6 +11,8 @@ import {
   fullAddress,
   formatDate,
   proficiencyBadge,
+  conditionLabel,
+  ageFrom,
 } from "@/store/licence";
 
 export const Route = createFileRoute("/licence")({
@@ -33,12 +36,13 @@ function LicencePage() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
   const [revealed, setRevealed] = useState(false);
-  
   const [now, setNow] = useState(() => new Date());
+  const [refreshing, setRefreshing] = useState(false);
+  const [pullY, setPullY] = useState(0);
+  const pullStart = useRef<number | null>(null);
 
   const badge = proficiencyBadge(licence.proficiency);
 
-  // Live-updating "last refreshed" timestamp (per-minute resolution)
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
@@ -54,7 +58,6 @@ function LicencePage() {
     hour12: true,
   });
 
-  // Static QR payload — same code every time, derived from licence number only.
   const qrPayload = useMemo(
     () => `VICROADS:LICENCE:${licence.licenceNumber}`,
     [licence.licenceNumber],
@@ -64,7 +67,6 @@ function LicencePage() {
     QRCode.toDataURL(qrPayload, { width: 480, margin: 1 }).then(setQrDataUrl);
   }, [qrPayload]);
 
-  // Countdown loop (display only — does not refresh QR). Resets when revealed.
   useEffect(() => {
     if (!revealed) return;
     setRemaining(QR_TTL);
@@ -77,81 +79,116 @@ function LicencePage() {
   const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
   const ss = String(remaining % 60).padStart(2, "0");
 
+  const doRefresh = () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    setTimeout(() => {
+      setNow(new Date());
+      setRefreshing(false);
+      toast.success("Licence refreshed");
+    }, 700);
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (window.scrollY > 0) return;
+    pullStart.current = e.touches[0].clientY;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (pullStart.current == null) return;
+    const dy = e.touches[0].clientY - pullStart.current;
+    if (dy > 0) setPullY(Math.min(dy, 100));
+  };
+  const onTouchEnd = () => {
+    if (pullY > 70) doRefresh();
+    setPullY(0);
+    pullStart.current = null;
+  };
+
   return (
     <AppShell>
-      <div className="flex items-center gap-2 px-5 pt-6 pb-4">
-        <button onClick={() => navigate({ to: "/" })} className="rounded p-1 hover:bg-muted">
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <h1 className="flex-1 text-center text-base font-semibold">View details</h1>
-        <div className="w-7" />
-      </div>
-
-      <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
-        Last refreshed: {refreshedLabel}
-      </p>
-
-      <div>
-        <div className={`flex items-center justify-between px-5 py-3 text-white ${badge.color}`}>
-          <div>
-            <p className="text-sm font-bold tracking-wide">{badge.label}</p>
-            <p className="text-[11px] opacity-90">Victoria Australia</p>
-          </div>
-          <VicRoadsLogo size={28} />
-        </div>
-        <div
-          className="relative bg-green-100 p-4"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(-30deg, rgba(220,38,38,0.10) 0 2px, transparent 2px 14px), radial-gradient(circle at 20% 30%, rgba(220,38,38,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(220,38,38,0.08), transparent 45%)",
-          }}
-        >
-          <div className="relative grid grid-cols-2 gap-3">
-            <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
-              {licence.photoUrl ? (
-                <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
-              ) : (
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-muted-foreground">
-                  <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
-                </svg>
-              )}
-            </div>
-            <div className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-3 text-center">
-              <p className="text-[11px] leading-snug text-foreground">
-                Presenting a QR code allows your driver licence information to be scanned and shared.
-              </p>
-              <p className="mt-2 text-xs font-bold text-foreground">
-                Do you consent to share your information?
-              </p>
-              <button
-                onClick={() => setRevealed(true)}
-                className="mt-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
-              >
-                Reveal QR code
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-5 mt-5 grid grid-cols-3 rounded-full bg-muted p-1 text-sm">
-        {(["Licence", "Identity", "Age"] as Tab[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`rounded-full py-2 transition ${
-              tab === t ? "bg-slate-900 text-white" : "text-muted-foreground"
-            }`}
-          >
-            {t}
+      <div
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        style={{ transform: `translateY(${pullY * 0.4}px)`, transition: pullY ? "none" : "transform 200ms" }}
+      >
+        <div className="flex items-center gap-2 px-5 pt-6 pb-4">
+          <button onClick={() => navigate({ to: "/" })} className="rounded p-1 hover:bg-muted">
+            <ChevronLeft className="h-5 w-5" />
           </button>
-        ))}
-      </div>
+          <h1 className="flex-1 text-center text-base font-semibold">View details</h1>
+          <button onClick={doRefresh} className="rounded p-1 hover:bg-muted" aria-label="Refresh">
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          </button>
+        </div>
 
-      <div className="mx-5 mt-5">
-        {tab === "Licence" && <LicenceTab />}
-        {tab === "Identity" && <IdentityTab />}
-        {tab === "Age" && <AgeTab />}
+        <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
+          {refreshing ? "Refreshing…" : <>Last refreshed: {refreshedLabel}</>}
+        </p>
+
+        <div>
+          <div className={`flex items-center justify-between px-5 py-3 text-white ${badge.color}`}>
+            <div>
+              <p className="text-sm font-bold tracking-wide">{badge.label}</p>
+              <p className="text-[11px] opacity-90">Victoria Australia</p>
+            </div>
+            <VicRoadsLogo size={28} />
+          </div>
+          <div
+            className="relative bg-green-100 p-4"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(-30deg, rgba(220,38,38,0.10) 0 2px, transparent 2px 14px), radial-gradient(circle at 20% 30%, rgba(220,38,38,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(220,38,38,0.08), transparent 45%)",
+            }}
+          >
+            <div className="relative grid grid-cols-2 gap-3">
+              <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
+                {licence.photoUrl ? (
+                  <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
+                ) : (
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-muted-foreground">
+                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
+                  </svg>
+                )}
+                <Hologram />
+              </div>
+              <div className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-3 text-center">
+                <p className="text-[11px] leading-snug text-foreground">
+                  Presenting a QR code allows your driver licence information to be scanned and shared.
+                </p>
+                <p className="mt-2 text-xs font-bold text-foreground">
+                  Do you consent to share your information?
+                </p>
+                <button
+                  onClick={() => setRevealed(true)}
+                  className="mt-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
+                >
+                  Reveal QR code
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-5 mt-5 grid grid-cols-3 rounded-full bg-muted p-1 text-sm">
+          {(["Licence", "Identity", "Age"] as Tab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`rounded-full py-2 transition ${
+                tab === t ? "bg-slate-900 text-white" : "text-muted-foreground"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <div className="mx-5 mt-5">
+          {tab === "Licence" && <LicenceTab />}
+          {tab === "Identity" && <IdentityTab />}
+          {tab === "Age" && <AgeTab />}
+        </div>
       </div>
 
       {revealed && (
@@ -192,9 +229,43 @@ function LicencePage() {
   );
 }
 
+function Hologram() {
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)",
+          mixBlendMode: "overlay",
+          animation: "ddl-shimmer 3.5s linear infinite",
+        }}
+      />
+      <svg
+        viewBox="0 0 64 64"
+        className="pointer-events-none absolute inset-0 m-auto h-1/2 w-1/2 opacity-25"
+        style={{ mixBlendMode: "overlay" }}
+        aria-hidden
+      >
+        <path
+          d="M32 6 L52 14 V30 C52 44 42 54 32 58 C22 54 12 44 12 30 V14 Z"
+          fill="none"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <circle cx="32" cy="28" r="6" fill="none" stroke="white" strokeWidth="2" />
+        <path d="M22 40 H42 M26 46 H38" stroke="white" strokeWidth="2" />
+      </svg>
+      <style>{`@keyframes ddl-shimmer { 0% { transform: translateX(-100%);} 100% { transform: translateX(100%);} }`}</style>
+    </>
+  );
+}
+
 function LicenceTab() {
   const licence = useLicenceStore((s) => s.licence);
   const badge = proficiencyBadge(licence.proficiency);
+  const [showCard, setShowCard] = useState(false);
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold uppercase tracking-wide">{fullName(licence)}</h2>
@@ -216,28 +287,89 @@ function LicenceTab() {
         )}
       </Field>
 
-      {licence.proficiency !== "Full" && (
-        <div className="mt-6 rounded-xl bg-muted/60 p-4">
-          <p className="font-semibold">{licence.type} learner permit details</p>
-          <div className="mt-3 space-y-3">
-            <Field label="Permit status">
-              <p className="flex items-center gap-2 text-sm">
-                <span className="inline-block h-3 w-3 rounded-full bg-green-600" />
-                {licence.permitStatus}
-              </p>
-            </Field>
-            <Field label="Proficiency">
-              <p className="flex items-center gap-2 text-sm">
-                {badge.chip && <Chip {...badge.chip} />}
-                {licence.proficiency}
-              </p>
-            </Field>
-            <Field label="Issue date">
-              <p className="text-sm">{formatDate(licence.permitIssueDate)}</p>
-            </Field>
-          </div>
+      <div className="pt-2">
+        <p className="font-semibold">{licence.type} licence details</p>
+        <div className="mt-3 space-y-3">
+          <Field label="Licence status">
+            <p className="flex items-center gap-2 text-sm">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-white">
+                <Check className="h-3 w-3" />
+              </span>
+              {licence.licenceStatus}
+            </p>
+          </Field>
+          <Field label="Proficiency">
+            <p className="flex items-center gap-2 text-sm">
+              {badge.chip && <Chip {...badge.chip} />}
+              {licence.proficiency}
+            </p>
+          </Field>
+          <Field label="Issue date">
+            <p className="text-sm">{formatDate(licence.issueDate)}</p>
+          </Field>
+          <Field label="Expiry">
+            <p className="text-sm">{formatDate(licence.expiry)}</p>
+          </Field>
         </div>
-      )}
+      </div>
+
+      <div className="pt-2">
+        <p className="font-semibold">Other details</p>
+        <div className="mt-3 space-y-3">
+          <Field label="Conditions">
+            {licence.conditions.length === 0 ? (
+              <p className="text-sm italic text-muted-foreground">None</p>
+            ) : (
+              <ul className="space-y-1 text-sm">
+                {licence.conditions.map((c) => (
+                  <li key={c} className="flex gap-3">
+                    <span className="font-bold">{c.toUpperCase()}</span>
+                    <span>{conditionLabel(c)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Field>
+          <Field label="Card number">
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-sm tracking-widest">
+                {showCard ? licence.cardNumber : "•".repeat(licence.cardNumber.length)}
+              </p>
+              <button
+                onClick={() => setShowCard((v) => !v)}
+                className="rounded p-1 hover:bg-muted"
+                aria-label={showCard ? "Hide card number" : "Reveal card number"}
+              >
+                {showCard ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </Field>
+          <Field label="Victoria Police barcode">
+            <PoliceBarcode seed={licence.licenceNumber} />
+          </Field>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PoliceBarcode({ seed }: { seed: string }) {
+  // Deterministic pseudo-random bar widths from seed
+  const bars = useMemo(() => {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) & 0xffffffff;
+    const out: { w: number; black: boolean }[] = [];
+    for (let i = 0; i < 70; i++) {
+      h = (h * 1103515245 + 12345) & 0x7fffffff;
+      out.push({ w: 1 + (h % 4), black: i % 2 === 0 });
+    }
+    return out;
+  }, [seed]);
+  return (
+    <div className="flex h-12 items-stretch gap-[1px]">
+      {bars.map((b, i) => (
+        <div key={i} style={{ width: b.w, background: b.black ? "#000" : "transparent" }} />
+      ))}
     </div>
   );
 }
@@ -247,11 +379,15 @@ function IdentityTab() {
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold uppercase tracking-wide">{fullName(licence)}</h2>
-      <Field label="Date of birth">
-        <p>{formatDate(licence.dob)}</p>
-      </Field>
       <Field label="Address">
-        <p className="whitespace-pre-line">{fullAddress(licence)}</p>
+        <p className="whitespace-pre-line text-sm">{fullAddress(licence)}</p>
+      </Field>
+      <Field label="Signature">
+        {licence.signatureUrl ? (
+          <img src={licence.signatureUrl} alt="Signature" className="h-16 object-contain" />
+        ) : (
+          <p className="text-sm italic text-muted-foreground">No signature on file</p>
+        )}
       </Field>
     </div>
   );
@@ -259,28 +395,26 @@ function IdentityTab() {
 
 function AgeTab() {
   const licence = useLicenceStore((s) => s.licence);
-  const age = ageFromHook(licence.dob);
+  const over18 = ageFrom(licence.dob) >= 18;
   return (
     <div className="space-y-4">
-      <Field label="Date of birth">
-        <p className="text-lg font-semibold">{formatDate(licence.dob)}</p>
-      </Field>
-      <div className="rounded-xl bg-green-100 py-8 text-center">
-        <p className="text-5xl font-bold">{age}</p>
-        <p className="mt-1 text-sm text-muted-foreground">years old</p>
+      <p className="text-xs text-muted-foreground">Age status</p>
+      <div
+        className={`flex items-center justify-center gap-3 rounded-xl py-8 text-2xl font-bold ${
+          over18 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}
+      >
+        <span
+          className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${
+            over18 ? "bg-green-600" : "bg-red-600"
+          } text-white`}
+        >
+          <Check className="h-5 w-5" />
+        </span>
+        {over18 ? "Over 18" : "Under 18"}
       </div>
     </div>
   );
-}
-
-function ageFromHook(dob: string) {
-  const d = new Date(dob);
-  if (isNaN(d.getTime())) return 0;
-  const now = new Date();
-  let a = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) a--;
-  return a;
 }
 
 function Row({ left, right }: { left: [string, React.ReactNode]; right: [string, React.ReactNode] }) {
