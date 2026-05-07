@@ -169,7 +169,7 @@ function LicencePage() {
             }}
           >
             <div className="relative flex w-full items-stretch justify-between gap-3 px-2">
-              <div className="relative flex h-full min-h-[180px] w-[42%] items-center justify-center overflow-hidden rounded-lg bg-muted">
+              <div className="relative flex h-full min-h-[140px] w-[34%] items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
@@ -183,7 +183,7 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="relative flex w-[42%] flex-col items-stretch justify-between rounded-lg bg-white p-3 text-center"
+                className="relative flex w-[34%] flex-col items-stretch justify-between rounded-lg bg-white p-2 text-center"
                 aria-label="Expand QR code"
               >
                 <p className="text-sm font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
