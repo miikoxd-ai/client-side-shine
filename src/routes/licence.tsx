@@ -183,7 +183,7 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="relative flex w-full flex-col items-stretch justify-between rounded-lg bg-white p-3 text-center"
+                className="relative flex w-[42%] flex-col items-stretch justify-between rounded-lg bg-white p-3 text-center"
                 aria-label="Expand QR code"
               >
                 <p className="text-sm font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
