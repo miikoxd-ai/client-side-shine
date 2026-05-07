@@ -164,8 +164,8 @@ function LicencePage() {
                 "repeating-linear-gradient(-30deg, rgba(220,38,38,0.10) 0 2px, transparent 2px 14px), radial-gradient(circle at 20% 30%, rgba(220,38,38,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(220,38,38,0.08), transparent 45%)",
             }}
           >
-            <div className="relative grid grid-cols-2 gap-3">
-              <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
+            <div className="relative grid grid-cols-2 items-stretch gap-3">
+              <div className="relative flex aspect-square h-full w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
