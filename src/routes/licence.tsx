@@ -9,6 +9,7 @@ import policeBarcodeImg from "@/assets/police-barcode.avif";
 import licenceBgImg from "@/assets/licence-bg.png";
 import photoOverlayImg from "@/assets/photo-overlay.png";
 import coatOfArmsImg from "@/assets/coat_of_arms_white.png";
+import coatOfArmsOverlayImg from "@/assets/coat_of_arms_white_overlay.png";
 import { useDeviceTilt } from "@/hooks/use-device-tilt";
 import {
   useLicenceStore,
