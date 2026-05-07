@@ -136,7 +136,7 @@ function LicencePage() {
           <button onClick={() => navigate({ to: "/" })} className="rounded p-1 hover:bg-muted">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <h1 className="flex-1 text-center text-base font-semibold">View details</h1>
+          <h1 className="flex-1 text-center text-base font-bold">View details</h1>
           <div className="w-7" />
         </div>
 
