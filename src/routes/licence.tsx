@@ -148,7 +148,7 @@ function LicencePage() {
           </div>
         )}
 
-        <p className="border-t border-border py-0 text-center text-xs leading-tight text-muted-foreground">
+        <p className="border-t border-border py-2 text-center text-xs text-muted-foreground">
           {refreshing ? "Refreshing…" : <>Last refreshed: {refreshedLabel}</>}
         </p>
 
@@ -161,7 +161,7 @@ function LicencePage() {
             <VicRoadsLogo size={28} />
           </div>
           <div
-            className="relative bg-green-100 p-4"
+            className="relative bg-green-100 px-4 pb-4 pt-0"
             style={{
               backgroundImage: `url(${licenceBgImg})`,
               backgroundSize: "cover",
