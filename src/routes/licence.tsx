@@ -52,8 +52,6 @@ function LicencePage() {
   const holoShift = `translate(${tilt.x * 6}px, ${tilt.y * 6}px)`;
   const sheenAngle = 90 + tilt.x * 60;
   const sheenPos = 50 + tilt.x * 40;
-  const tiltMag = Math.min(1, Math.hypot(tilt.x, tilt.y));
-  const coatOpacity = 0.1 + tiltMag * 0.2;
 
   useEffect(() => {
     setNow(new Date());
@@ -188,7 +186,7 @@ function LicencePage() {
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20 transition-transform" />
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateY(-50%) ${holoShift}` }} className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 opacity-20 transition-transform" />
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateX(-50%) ${holoShift}` }} className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 opacity-20 transition-transform" />
-                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift, opacity: coatOpacity }} className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-all" />
+                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-5 transition-transform" />
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-0 mix-blend-overlay transition-all"
