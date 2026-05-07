@@ -197,9 +197,9 @@ function LicencePage() {
                     <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent" />
                   </div>
                 )}
+                <Maximize2 className="absolute bottom-2 right-2 h-5 w-5 text-slate-900" strokeWidth={2.5} />
               </button>
             </div>
-            <Maximize2 className="absolute bottom-2 right-2 h-5 w-5 text-slate-900" strokeWidth={2.5} />
           </div>
         </div>
 
