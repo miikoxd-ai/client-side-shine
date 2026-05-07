@@ -77,15 +77,15 @@ function LicencePage() {
         Last refreshed: {today}
       </p>
 
-      <div className="mx-5">
-        <div className={`flex items-center justify-between rounded-t-2xl px-4 py-3 text-white ${badge.color}`}>
+      <div>
+        <div className={`flex items-center justify-between px-5 py-3 text-white ${badge.color}`}>
           <div>
             <p className="text-sm font-bold tracking-wide">{badge.label}</p>
             <p className="text-[11px] opacity-90">Victoria Australia</p>
           </div>
           <VicRoadsLogo size={28} />
         </div>
-        <div className="rounded-b-2xl bg-green-100 p-3">
+        <div className="bg-green-100 p-4">
           <div className="flex gap-3">
             <div className="flex h-32 w-28 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
               {licence.photoUrl ? (
