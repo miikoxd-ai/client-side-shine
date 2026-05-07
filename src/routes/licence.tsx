@@ -188,7 +188,7 @@ function LicencePage() {
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20 transition-transform" />
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateY(-50%) ${holoShift}` }} className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 opacity-20 transition-transform" />
                 <img src={photoOverlayImg} alt="" aria-hidden style={{ transform: `translateX(-50%) ${holoShift}` }} className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 opacity-20 transition-transform" />
-                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift }} className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-5 transition-transform" />
+                <img src={coatOfArmsImg} alt="" aria-hidden style={{ transform: holoShift, opacity: coatOpacity }} className="pointer-events-none absolute inset-0 h-full w-full object-contain transition-all" />
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-0 mix-blend-overlay transition-all"
