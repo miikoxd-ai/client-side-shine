@@ -186,6 +186,7 @@ function LicencePage() {
                 )}
                 <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 h-12 w-12 -translate-y-1/2" style={{ top: "33.333%" }} />
                 <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 h-12 w-12 -translate-y-1/2" style={{ top: "66.666%" }} />
+                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-12 w-12 -translate-y-1/2" />
               </div>
               <button
                 onClick={() => setRevealed(true)}
