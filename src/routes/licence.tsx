@@ -161,7 +161,7 @@ function LicencePage() {
             <VicRoadsLogo size={28} />
           </div>
           <div
-            className="relative bg-green-100 px-4 pb-4 pt-0"
+            className="relative flex items-center bg-green-100 p-4"
             style={{
               backgroundImage: `url(${licenceBgImg})`,
               backgroundSize: "cover",
