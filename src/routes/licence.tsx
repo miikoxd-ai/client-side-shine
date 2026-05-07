@@ -329,7 +329,7 @@ function LicenceTab() {
 
       <Row left={["Licence number", licence.licenceNumber]} right={["Expiry", formatDate(licence.expiry)]} />
       <Row
-        left={["Licence type", <span key="t" className="flex items-center gap-2">{licence.type}{badge.chip && <Chip {...badge.chip} />}</span>]}
+        left={["Licence type", <span key="t" className="flex items-center gap-2 font-bold">{licence.type}{badge.chip && <Chip {...badge.chip} />}</span>]}
         right={["Date of birth", formatDate(licence.dob)]}
       />
       <Field label="Address">
