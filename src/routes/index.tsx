@@ -55,7 +55,7 @@ function IndexPage() {
         />
       );
     }
-    if (step === "confirm") {
+    if (activeStep === "confirm") {
       return (
         <PasscodeKeypad
           title="Confirm Passcode"
