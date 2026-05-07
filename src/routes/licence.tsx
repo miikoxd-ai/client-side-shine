@@ -7,6 +7,7 @@ import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
 import policeBarcodeImg from "@/assets/police-barcode.avif";
 import licenceBgImg from "@/assets/licence-bg.png";
+import photoOverlayImg from "@/assets/photo-overlay.png";
 import {
   useLicenceStore,
   fullName,
