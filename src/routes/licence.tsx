@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, Eye, EyeOff, RefreshCw, Check } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Check } from "lucide-react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
