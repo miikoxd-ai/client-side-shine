@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
 import policeBarcodeImg from "@/assets/police-barcode.avif";
+import licenceBgImg from "@/assets/licence-bg.png";
 import {
   useLicenceStore,
   fullName,
@@ -161,8 +162,9 @@ function LicencePage() {
           <div
             className="relative bg-green-100 p-4"
             style={{
-              backgroundImage:
-                "repeating-linear-gradient(-30deg, rgba(220,38,38,0.10) 0 2px, transparent 2px 14px), radial-gradient(circle at 20% 30%, rgba(220,38,38,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(220,38,38,0.08), transparent 45%)",
+              backgroundImage: `url(${licenceBgImg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             <div className="relative grid grid-cols-2 items-stretch gap-3">
