@@ -36,7 +36,7 @@ function LicencePage() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
   const [revealed, setRevealed] = useState(false);
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [pullY, setPullY] = useState(0);
   const pullStart = useRef<number | null>(null);
@@ -44,19 +44,22 @@ function LicencePage() {
   const badge = proficiencyBadge(licence.proficiency);
 
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const refreshedLabel = now.toLocaleString("en-AU", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const refreshedLabel = now
+    ? now.toLocaleString("en-AU", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : "";
 
   const qrPayload = useMemo(
     () => `VICROADS:LICENCE:${licence.licenceNumber}`,
@@ -397,19 +400,15 @@ function AgeTab() {
   const licence = useLicenceStore((s) => s.licence);
   const over18 = ageFrom(licence.dob) >= 18;
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <p className="text-xs text-muted-foreground">Age status</p>
-      <div
-        className={`flex items-center justify-center gap-3 rounded-xl py-8 text-2xl font-bold ${
-          over18 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}
-      >
+      <div className="flex items-center gap-2 text-sm font-medium">
         <span
-          className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${
+          className={`inline-flex h-4 w-4 items-center justify-center rounded-full ${
             over18 ? "bg-green-600" : "bg-red-600"
           } text-white`}
         >
-          <Check className="h-5 w-5" />
+          <Check className="h-3 w-3" />
         </span>
         {over18 ? "Over 18" : "Under 18"}
       </div>
