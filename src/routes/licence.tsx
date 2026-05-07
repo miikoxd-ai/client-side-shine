@@ -172,20 +172,18 @@ function LicencePage() {
                 )}
                 <Hologram />
               </div>
-              <div className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-3 text-center">
-                <p className="text-[11px] leading-snug text-foreground">
-                  Presenting a QR code allows your driver licence information to be scanned and shared.
+              <button
+                onClick={() => setRevealed(true)}
+                className="flex aspect-square w-full flex-col items-center justify-center rounded-lg bg-white p-2 text-center"
+                aria-label="Expand QR code"
+              >
+                {qrDataUrl && (
+                  <img src={qrDataUrl} alt="Licence QR code" className="h-full w-full object-contain" />
+                )}
+                <p className="mt-1 text-[11px] font-semibold text-foreground">
+                  QR expires <span className="font-bold">{mm}:{ss}</span>
                 </p>
-                <p className="mt-2 text-xs font-bold text-foreground">
-                  Do you consent to share your information?
-                </p>
-                <button
-                  onClick={() => setRevealed(true)}
-                  className="mt-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white"
-                >
-                  Reveal QR code
-                </button>
-              </div>
+              </button>
             </div>
           </div>
         </div>
