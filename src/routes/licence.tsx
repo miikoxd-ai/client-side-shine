@@ -333,7 +333,7 @@ function LicenceTab() {
         right={["Date of birth", formatDate(licence.dob)]}
       />
       <Field label="Address">
-        <p className="whitespace-pre-line text-sm">{fullAddress(licence)}</p>
+        <p className="whitespace-pre-line text-sm font-bold">{fullAddress(licence)}</p>
       </Field>
 
       <Field label="Signature">
@@ -428,7 +428,7 @@ function IdentityTab() {
     <div className="space-y-4">
       <h2 className="text-xl font-bold uppercase tracking-wide">{fullName(licence)}</h2>
       <Field label="Address">
-        <p className="whitespace-pre-line text-sm">{fullAddress(licence)}</p>
+        <p className="whitespace-pre-line text-sm font-bold">{fullAddress(licence)}</p>
       </Field>
       <Field label="Signature">
         {licence.signatureUrl ? (
