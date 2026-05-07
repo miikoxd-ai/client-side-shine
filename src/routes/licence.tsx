@@ -7,6 +7,7 @@ import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
 import policeBarcodeImg from "@/assets/police-barcode.avif";
 import licenceBgImg from "@/assets/licence-bg.png";
+import photoOverlayImg from "@/assets/photo-overlay.png";
 import {
   useLicenceStore,
   fullName,
@@ -176,7 +177,9 @@ function LicencePage() {
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                   </svg>
                 )}
-                <Hologram />
+                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-8 w-8 opacity-20" />
+                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 opacity-20" />
+                <img src={photoOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1/2 h-8 w-8 -translate-x-1/2 opacity-20" />
               </div>
               <button
                 onClick={() => setRevealed(true)}
