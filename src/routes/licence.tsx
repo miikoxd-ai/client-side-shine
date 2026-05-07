@@ -161,15 +161,15 @@ function LicencePage() {
             <VicRoadsLogo size={28} />
           </div>
           <div
-            className="relative flex items-stretch bg-green-100 p-3"
+            className="relative flex items-center bg-green-100 px-4 py-6"
             style={{
               backgroundImage: `url(${licenceBgImg})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           >
-            <div className="relative flex w-full items-stretch justify-between gap-3 px-2">
-              <div className="relative flex h-full min-h-[140px] w-[34%] items-center justify-center overflow-hidden rounded-lg bg-muted">
+            <div className="relative flex w-full items-stretch justify-between gap-6">
+              <div className="relative flex aspect-[4/5] w-[38%] items-center justify-center overflow-hidden rounded-lg bg-muted shadow-sm">
                 {licence.photoUrl ? (
                   <img src={licence.photoUrl} alt="Licence photo" className="h-full w-full object-cover" />
                 ) : (
@@ -183,7 +183,7 @@ function LicencePage() {
               </div>
               <button
                 onClick={() => setRevealed(true)}
-                className="relative flex w-[34%] flex-col items-stretch justify-between rounded-lg bg-white p-2 text-center"
+                className="relative flex aspect-[4/5] w-[38%] flex-col items-stretch justify-between rounded-lg bg-white p-2 text-center shadow-sm"
                 aria-label="Expand QR code"
               >
                 <p className="text-sm font-bold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
