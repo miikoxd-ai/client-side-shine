@@ -55,6 +55,21 @@ export function PhotoUpload({
           )}
         </div>
       </div>
+      <div className="mt-2">
+        <Input
+          type="url"
+          placeholder="Or paste image URL (optional)"
+          value={url}
+          onChange={(e) => {
+            const v = e.target.value;
+            setUrl(v);
+            const trimmed = v.trim();
+            if (!trimmed) onChange(undefined);
+            else if (/^https?:\/\//i.test(trimmed)) onChange(trimmed);
+          }}
+          className="text-xs"
+        />
+      </div>
     </div>
   );
 }
