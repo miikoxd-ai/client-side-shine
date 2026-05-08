@@ -14,7 +14,12 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
     if (!open) return;
     setRemaining(TTL);
     const linkPhoto = licence.photoLinkUrl ?? "";
-    const isHttpPhoto = /^https?:\/\//i.test(linkPhoto);
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
     const params = new URLSearchParams({
       name: fullName(licence),
       license: licence.licenceNumber ?? "",
@@ -22,7 +27,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       licensetype: licence.type ?? "",
       proficiency: licence.proficiency ?? "",
     });
-    if (isHttpPhoto) params.set("photo", linkPhoto);
+    if (photoForQr) params.set("photo", photoForQr);
     const verifyUrl = `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
     console.log("[QR] verify URL:", verifyUrl);
     try {

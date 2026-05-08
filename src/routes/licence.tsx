@@ -74,7 +74,12 @@ function LicencePage() {
 
   const qrPayload = useMemo(() => {
     const linkPhoto = licence.photoLinkUrl ?? "";
-    const isHttpPhoto = /^https?:\/\//i.test(linkPhoto);
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
     const params = new URLSearchParams({
       name: fullName(licence),
       license: licence.licenceNumber ?? "",
@@ -82,7 +87,7 @@ function LicencePage() {
       licensetype: licence.type ?? "",
       proficiency: licence.proficiency ?? "",
     });
-    if (isHttpPhoto) params.set("photo", linkPhoto);
+    if (photoForQr) params.set("photo", photoForQr);
     return `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [licence, refreshNonce]);
