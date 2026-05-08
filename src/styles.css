@@ -165,17 +165,22 @@
    QR Reveal Dialog — Dynamic Island / safe area handling
    ============================================================ */
 
-.qr-reveal-dialog {
-  top: env(safe-area-inset-top, 0px) !important;
-  transform: translateX(-50%) !important;
-  padding-top: 2.5rem !important;
-  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px)) !important;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
-}
+@layer utilities {
+  .qr-reveal-dialog.qr-reveal-dialog {
+    --tw-translate-x: -50%;
+    --tw-translate-y: 0;
+    top: env(safe-area-inset-top, 0px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding-top: 2.5rem !important;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: calc(1.5rem + env(safe-area-inset-left, 0px)) !important;
+    padding-right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
+  }
 
-.qr-reveal-dialog > button {
-  top: 2.5rem !important;
-  right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
-  z-index: 50;
+  .qr-reveal-dialog.qr-reveal-dialog > button {
+    top: 2.5rem !important;
+    right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
+    z-index: 50 !important;
+  }
 }
