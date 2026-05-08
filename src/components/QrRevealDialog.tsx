@@ -22,7 +22,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       licensetype: licence.type ?? "",
     });
     if (isHttpPhoto) params.set("photo", photo);
-    const verifyUrl = `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const verifyUrl = `${origin}/verify?${params.toString()}`;
     try {
       localStorage.setItem("vicstate-id:verify-url", verifyUrl);
     } catch {}
