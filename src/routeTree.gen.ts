@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as VehiclesRouteImport } from './routes/vehicles'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaymentsRouteImport } from './routes/payments'
@@ -16,6 +17,11 @@ import { Route as LicenceRouteImport } from './routes/licence'
 import { Route as DemeritRouteImport } from './routes/demerit'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VehiclesRoute = VehiclesRouteImport.update({
   id: '/vehicles',
   path: '/vehicles',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +90,16 @@ export interface FileRouteTypes {
     | '/payments'
     | '/profile'
     | '/vehicles'
+    | '/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demerit' | '/licence' | '/payments' | '/profile' | '/vehicles'
+  to:
+    | '/'
+    | '/demerit'
+    | '/licence'
+    | '/payments'
+    | '/profile'
+    | '/vehicles'
+    | '/verify'
   id:
     | '__root__'
     | '/'
@@ -91,6 +108,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/profile'
     | '/vehicles'
+    | '/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,10 +118,18 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   ProfileRoute: typeof ProfileRoute
   VehiclesRoute: typeof VehiclesRoute
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vehicles': {
       id: '/vehicles'
       path: '/vehicles'
@@ -156,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   ProfileRoute: ProfileRoute,
   VehiclesRoute: VehiclesRoute,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
