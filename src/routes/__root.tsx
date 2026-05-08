@@ -87,8 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "myVicRoads" },
       { name: "twitter:description", content: "myVicRoads" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc86c307-1920-487c-8fcf-b1c1c5c52699/id-preview-4e1e5af9--2f979392-c423-453a-a4c0-b1f08a6d14f2.lovable.app-1778232910336.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc86c307-1920-487c-8fcf-b1c1c5c52699/id-preview-4e1e5af9--2f979392-c423-453a-a4c0-b1f08a6d14f2.lovable.app-1778232910336.png" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8433b834-2ae4-4aba-b879-0afa1c94654d/id-preview-c0ff5741--2f979392-c423-453a-a4c0-b1f08a6d14f2.lovable.app-1778234418688.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8433b834-2ae4-4aba-b879-0afa1c94654d/id-preview-c0ff5741--2f979392-c423-453a-a4c0-b1f08a6d14f2.lovable.app-1778234418688.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
