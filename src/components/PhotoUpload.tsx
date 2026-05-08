@@ -15,6 +15,7 @@ export function PhotoUpload({
   aspect?: "portrait" | "wide";
 }) {
   const ref = useRef<HTMLInputElement>(null);
+  const isUploaded = !!value && value.startsWith("data:");
   const [url, setUrl] = useState(value && /^https?:\/\//i.test(value) ? value : "");
   useEffect(() => {
     setUrl(value && /^https?:\/\//i.test(value) ? value : "");
@@ -58,9 +59,11 @@ export function PhotoUpload({
       <div className="mt-2">
         <Input
           type="url"
-          placeholder="Or paste image URL (optional)"
-          value={url}
+          placeholder={isUploaded ? "Uploaded photo is being used" : "Or paste image URL (optional)"}
+          value={isUploaded ? "" : url}
+          disabled={isUploaded}
           onChange={(e) => {
+            if (isUploaded) return;
             const v = e.target.value;
             setUrl(v);
             const trimmed = v.trim();
@@ -69,6 +72,11 @@ export function PhotoUpload({
           }}
           className="text-xs"
         />
+        {isUploaded && (
+          <p className="mt-1 text-[10px] text-muted-foreground">
+            Uploaded photo takes priority. Remove it to use a URL instead.
+          </p>
+        )}
       </div>
     </div>
   );
