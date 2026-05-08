@@ -52,9 +52,15 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
         <DialogHeader>
           <DialogTitle>Verify Licence</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-center">
-          {dataUrl && <img src={dataUrl} alt="Licence QR code" className="h-72 w-72" />}
-          <p className="mt-3 font-semibold text-foreground">
+        <div className="flex flex-col items-center overflow-hidden">
+          {dataUrl && (
+            <img
+              src={dataUrl}
+              alt="Licence QR code"
+              className="h-72 w-72 animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_both]"
+            />
+          )}
+          <p className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]">
             QR expires {mm}:{ss}
           </p>
         </div>
