@@ -184,3 +184,17 @@
     z-index: 50 !important;
   }
 }
+
+/* DEBUG: shows safe-area-inset value at top of screen — remove after testing */
+body::before {
+  content: "inset-top: " env(safe-area-inset-top, 0px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: lime;
+  color: black;
+  font-size: 11px;
+  padding: 2px 6px;
+  z-index: 99999;
+  font-family: monospace;
+}
