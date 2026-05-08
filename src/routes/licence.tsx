@@ -72,13 +72,27 @@ function LicencePage() {
       })
     : "";
 
-  const qrPayload = useMemo(
-    () => `VICROADS:LICENCE:${licence.licenceNumber}:${refreshNonce}`,
-    [licence.licenceNumber, refreshNonce],
-  );
+  const qrPayload = useMemo(() => {
+    const photo = licence.photoUrl ?? "";
+    const isHttpPhoto = /^https?:\/\//i.test(photo);
+    const params = new URLSearchParams({
+      name: fullName(licence),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      licensetype: licence.type ?? "",
+    });
+    if (isHttpPhoto) params.set("photo", photo);
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return `${origin}/verify?${params.toString()}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [licence, refreshNonce]);
 
   useEffect(() => {
-    QRCode.toDataURL(qrPayload, { width: 480, margin: 1 }).then(setQrDataUrl);
+    console.log("[QR] verify URL:", qrPayload);
+    try {
+      localStorage.setItem("vicstate-id:verify-url", qrPayload);
+    } catch {}
+    QRCode.toDataURL(qrPayload, { width: 480, margin: 1, errorCorrectionLevel: "L" }).then(setQrDataUrl);
   }, [qrPayload]);
 
   useEffect(() => {
