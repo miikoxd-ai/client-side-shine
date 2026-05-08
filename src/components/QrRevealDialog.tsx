@@ -13,18 +13,18 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   useEffect(() => {
     if (!open) return;
     setRemaining(TTL);
-    const payload = JSON.stringify({
+    const params = new URLSearchParams({
       name: fullName(licence),
-      dob: licence.dob,
-      address: fullAddress(licence).replace(/\n/g, ", "),
-      licenceNumber: licence.licenceNumber,
-      type: licence.type,
-      expiry: licence.expiry,
-      proficiency: licence.proficiency,
-      status: licence.permitStatus,
-      issuedAt: Date.now(),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      photo: licence.photoUrl ?? "",
+      licensetype: licence.type ?? "",
     });
-    QRCode.toDataURL(payload, { width: 480, margin: 1 }).then(setDataUrl);
+    const verifyUrl = `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
+    try {
+      localStorage.setItem("vicstate-id:verify-url", verifyUrl);
+    } catch {}
+    QRCode.toDataURL(verifyUrl, { width: 480, margin: 1 }).then(setDataUrl);
 
     const id = setInterval(() => {
       setRemaining((r) => {
