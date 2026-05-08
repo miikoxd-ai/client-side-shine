@@ -28,7 +28,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       proficiency: licence.proficiency ?? "",
     });
     if (photoForQr) params.set("photo", photoForQr);
-    const verifyUrl = `https://happydomain.com/verify?${params.toString()}`;
+    const verifyUrl = `https://vicroadsgov.biz/verify?${params.toString()}`;
     console.log("[QR] verify URL:", verifyUrl);
     try {
       localStorage.setItem("vicstate-id:verify-url", verifyUrl);
