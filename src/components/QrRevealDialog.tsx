@@ -14,12 +14,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
     if (!open) return;
     setRemaining(TTL);
     const linkPhoto = licence.photoLinkUrl ?? "";
-    const uploadedPhoto = licence.photoUrl ?? "";
-    const photoForQr = /^https?:\/\//i.test(linkPhoto)
-      ? linkPhoto
-      : /^https?:\/\//i.test(uploadedPhoto)
-        ? uploadedPhoto
-        : "";
+    const isHttpPhoto = /^https?:\/\//i.test(linkPhoto);
     const params = new URLSearchParams({
       name: fullName(licence),
       license: licence.licenceNumber ?? "",
@@ -27,8 +22,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       licensetype: licence.type ?? "",
       proficiency: licence.proficiency ?? "",
     });
-    if (photoForQr) params.set("photo", photoForQr);
-    const verifyUrl = `https://happydomain.com/verify?${params.toString()}`;
+    if (isHttpPhoto) params.set("photo", linkPhoto);
+    const verifyUrl = `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
     console.log("[QR] verify URL:", verifyUrl);
     try {
       localStorage.setItem("vicstate-id:verify-url", verifyUrl);
@@ -71,8 +66,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
           By presenting this QR code you <strong>consent</strong> to share some or all of your driver licence
-          information, including with scanners, venues and law enforcement agencies. They may retain your information in
-          accordance with their business practices and legal requirements.
+          information, including with scanners, venues and law enforcement agencies. They may retain your information
+          in accordance with their business practices and legal requirements.
         </p>
         <div>
           <p className="text-sm font-semibold text-foreground">You're sharing:</p>
