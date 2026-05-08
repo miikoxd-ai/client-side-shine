@@ -10,25 +10,6 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   const [dataUrl, setDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(TTL);
 
-  // While the QR dialog is open, allow pinch-zoom on the page so users can
-  // zoom into the QR code. Restore the locked viewport when the dialog closes.
-  // Note: viewport-fit=cover must be present in BOTH states so that
-  // env(safe-area-inset-*) returns non-zero values on notched devices.
-  useEffect(() => {
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    if (!meta) return;
-    const original = meta.getAttribute("content") ?? "";
-    if (open) {
-      meta.setAttribute(
-        "content",
-        "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover",
-      );
-      return () => {
-        meta.setAttribute("content", original);
-      };
-    }
-  }, [open]);
-
   useEffect(() => {
     if (!open) return;
     setRemaining(TTL);
@@ -72,7 +53,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="qr-reveal-dialog max-w-md max-h-[100dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)]">
+      <DialogContent className="max-w-md data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)]">
         <DialogHeader>
           <DialogTitle>Verify Licence</DialogTitle>
         </DialogHeader>
@@ -84,10 +65,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
               className="h-72 w-72 animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_both]"
             />
           )}
-          <p
-            className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]"
-            aria-live="polite"
-          >
+          <p className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]">
             QR expires {mm}:{ss}
           </p>
         </div>

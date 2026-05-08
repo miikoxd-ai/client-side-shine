@@ -55,30 +55,14 @@ export function PhotoUpload({
   useEffect(() => {
     setUrl(value && /^https?:\/\//i.test(value) ? value : "");
   }, [value]);
-  const fileToDataUrl = (f: File) =>
-    new Promise<string>((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result as string);
-      r.onerror = reject;
-      r.readAsDataURL(f);
-    });
   const handleFile = async (f?: File) => {
     if (!f) return;
     setError(null);
     setUploading(true);
     try {
-      // Always store a local data URL first so the photo is guaranteed to appear.
-      const dataUrl = await fileToDataUrl(f);
-      onChange(dataUrl);
-      setUrl("");
-      // Best-effort: try to also get a hosted URL (used for QR sharing). Failure is non-fatal.
-      try {
-        const hostedUrl = await uploadToFreeimage(f);
-        onChange(hostedUrl);
-        setUrl(hostedUrl);
-      } catch {
-        // ignore — local data URL already saved
-      }
+      const hostedUrl = await uploadToFreeimage(f);
+      onChange(hostedUrl);
+      setUrl(hostedUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {

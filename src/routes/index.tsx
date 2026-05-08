@@ -157,8 +157,7 @@ function Home() {
       <button
         type="button"
         onClick={() => navigate({ to: "/licence" })}
-        className="fixed left-1/2 z-20 flex w-[calc(100%-2.5rem)] max-w-[400px] -translate-x-1/2 items-center justify-between rounded-2xl bg-slate-900 p-5 text-left text-white shadow-lg transition hover:bg-slate-800"
-        style={{ bottom: "calc(5rem + env(safe-area-inset-bottom))" }}
+        className="fixed bottom-20 left-1/2 z-20 flex w-[calc(100%-2.5rem)] max-w-[400px] -translate-x-1/2 items-center justify-between rounded-2xl bg-slate-900 p-5 text-left text-white shadow-lg transition hover:bg-slate-800"
       >
         <div>
           <p className="font-semibold">My licence</p>
