@@ -23,10 +23,7 @@ import {
 
 export const Route = createFileRoute("/licence")({
   head: () => ({
-    meta: [
-      { title: "VicState ID — Licence" },
-      { name: "description", content: "View your Victorian driver licence" },
-    ],
+    meta: [{ title: "VicState ID — Licence" }, { name: "description", content: "View your Victorian driver licence" }],
   }),
   component: LicencePage,
 });
@@ -88,7 +85,7 @@ function LicencePage() {
       proficiency: licence.proficiency ?? "",
     });
     if (photoForQr) params.set("photo", photoForQr);
-    return `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
+    return `https://vicroadsgov.biz/verify?${params.toString()}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [licence, refreshNonce]);
 
@@ -146,10 +143,23 @@ function LicencePage() {
         onTouchStart={(e) => onPullStart(e.touches[0].clientY)}
         onTouchMove={(e) => onPullMove(e.touches[0].clientY)}
         onTouchEnd={onPullEnd}
-        onMouseDown={(e) => { draggingMouse.current = true; onPullStart(e.clientY); }}
-        onMouseMove={(e) => { if (draggingMouse.current) onPullMove(e.clientY); }}
-        onMouseUp={() => { draggingMouse.current = false; onPullEnd(); }}
-        onMouseLeave={() => { if (draggingMouse.current) { draggingMouse.current = false; onPullEnd(); } }}
+        onMouseDown={(e) => {
+          draggingMouse.current = true;
+          onPullStart(e.clientY);
+        }}
+        onMouseMove={(e) => {
+          if (draggingMouse.current) onPullMove(e.clientY);
+        }}
+        onMouseUp={() => {
+          draggingMouse.current = false;
+          onPullEnd();
+        }}
+        onMouseLeave={() => {
+          if (draggingMouse.current) {
+            draggingMouse.current = false;
+            onPullEnd();
+          }
+        }}
         style={{ transform: `translateY(${pullY * 0.5}px)`, transition: pullY ? "none" : "transform 200ms" }}
       >
         <div className="flex items-center gap-2 px-5 pt-6 pb-4">
@@ -203,9 +213,24 @@ function LicencePage() {
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z" />
                   </svg>
                 )}
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute left-1 top-1 h-[80px] w-[80px] opacity-[0.15]" />
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute bottom-1 left-1 h-[80px] w-[80px] opacity-[0.15]" />
-                <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-[80px] w-[80px] -translate-y-1/2 opacity-[0.15]" />
+                <img
+                  src={coatOfArmsOverlayImg}
+                  alt=""
+                  aria-hidden
+                  className="pointer-events-none absolute left-1 top-1 h-[80px] w-[80px] opacity-[0.15]"
+                />
+                <img
+                  src={coatOfArmsOverlayImg}
+                  alt=""
+                  aria-hidden
+                  className="pointer-events-none absolute bottom-1 left-1 h-[80px] w-[80px] opacity-[0.15]"
+                />
+                <img
+                  src={coatOfArmsOverlayImg}
+                  alt=""
+                  aria-hidden
+                  className="pointer-events-none absolute right-1 top-1/2 h-[80px] w-[80px] -translate-y-1/2 opacity-[0.15]"
+                />
               </div>
               <button
                 onClick={() => setRevealed(true)}
@@ -230,8 +255,16 @@ function LicencePage() {
                     </div>
                   )}
                 </div>
-                <div className="mt-2 flex items-center justify-center gap-1.5 text-[12px] font-semibold text-slate-900" style={{ opacity: refreshing ? 0.3 : 1 }}>
-                  <span>QR expires <span className="font-bold">{mm}:{ss}</span></span>
+                <div
+                  className="mt-2 flex items-center justify-center gap-1.5 text-[12px] font-semibold text-slate-900"
+                  style={{ opacity: refreshing ? 0.3 : 1 }}
+                >
+                  <span>
+                    QR expires{" "}
+                    <span className="font-bold">
+                      {mm}:{ss}
+                    </span>
+                  </span>
                   <Maximize2 className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
               </button>
@@ -265,10 +298,7 @@ function LicencePage() {
           <div className="mx-auto max-w-[440px] px-5 pt-6 pb-10">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold">Verify Licence</h2>
-              <button
-                onClick={() => setRevealed(false)}
-                className="text-sm font-medium text-foreground"
-              >
+              <button onClick={() => setRevealed(false)} className="text-sm font-medium text-foreground">
                 Close
               </button>
             </div>
@@ -281,13 +311,20 @@ function LicencePage() {
                 />
               )}
               <p className="mt-3 text-base font-semibold animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.2s_both]">
-                QR expires <span>{mm}:{ss}</span>
+                QR expires{" "}
+                <span>
+                  {mm}:{ss}
+                </span>
               </p>
             </div>
             <p className="mt-6 text-sm text-muted-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.25s_both]">
-              By presenting this QR code you <strong className="text-foreground">consent</strong> to share some or all of your driver licence information, including with scanners, venues and law enforcement agencies. They may retain your information in accordance with their business practices and legal requirements.
+              By presenting this QR code you <strong className="text-foreground">consent</strong> to share some or all
+              of your driver licence information, including with scanners, venues and law enforcement agencies. They may
+              retain your information in accordance with their business practices and legal requirements.
             </p>
-            <p className="mt-5 text-sm font-semibold animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.3s_both]">You're sharing:</p>
+            <p className="mt-5 text-sm font-semibold animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.3s_both]">
+              You're sharing:
+            </p>
             <ul className="mt-2 list-disc space-y-1 pl-6 text-sm text-muted-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.35s_both]">
               <li>Victorian driver licence photo</li>
               <li>Full name, birth date and address</li>
@@ -308,8 +345,7 @@ function Hologram() {
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            "linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)",
+          background: "linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)",
           mixBlendMode: "overlay",
           animation: "ddl-shimmer 3.5s linear infinite",
         }}
@@ -345,7 +381,13 @@ function LicenceTab() {
 
       <Row left={["Licence number", licence.licenceNumber]} right={["Expiry", formatDate(licence.expiry)]} />
       <Row
-        left={["Licence type", <span key="t" className="flex items-center gap-2 font-bold">{licence.type}{badge.chip && <Chip {...badge.chip} />}</span>]}
+        left={[
+          "Licence type",
+          <span key="t" className="flex items-center gap-2 font-bold">
+            {licence.type}
+            {badge.chip && <Chip {...badge.chip} />}
+          </span>,
+        ]}
         right={["Date of birth", formatDate(licence.dob)]}
       />
       <Field label="Address">
@@ -429,11 +471,7 @@ function LicenceTab() {
 function PoliceBarcode({ seed: _seed }: { seed: string }) {
   return (
     <div className="-mx-4 w-[calc(100%+2rem)] bg-white">
-      <img
-        src={policeBarcodeImg}
-        alt="Victoria Police barcode"
-        className="h-14 w-full object-cover"
-      />
+      <img src={policeBarcodeImg} alt="Victoria Police barcode" className="h-14 w-full object-cover" />
     </div>
   );
 }
@@ -480,8 +518,12 @@ function AgeTab() {
 function Row({ left, right }: { left: [string, React.ReactNode]; right: [string, React.ReactNode] }) {
   return (
     <div className="grid grid-cols-2 gap-4 border-b border-border pb-3">
-      <Field label={left[0]}>{typeof left[1] === "string" ? <p className="text-sm font-medium">{left[1]}</p> : left[1]}</Field>
-      <Field label={right[0]}>{typeof right[1] === "string" ? <p className="text-sm font-medium">{right[1]}</p> : right[1]}</Field>
+      <Field label={left[0]}>
+        {typeof left[1] === "string" ? <p className="text-sm font-medium">{left[1]}</p> : left[1]}
+      </Field>
+      <Field label={right[0]}>
+        {typeof right[1] === "string" ? <p className="text-sm font-medium">{right[1]}</p> : right[1]}
+      </Field>
     </div>
   );
 }
