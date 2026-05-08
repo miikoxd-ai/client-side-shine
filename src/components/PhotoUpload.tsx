@@ -1,7 +1,36 @@
 import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
+
+const FREEIMAGE_API_KEY = "6d207e02198a847aa98d0a2a901485a5";
+
+async function uploadToFreeimage(file: File): Promise<string> {
+  const base64 = await new Promise<string>((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const result = r.result as string;
+      // strip data:*;base64, prefix
+      resolve(result.includes(",") ? result.split(",")[1] : result);
+    };
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+  const form = new FormData();
+  form.append("key", FREEIMAGE_API_KEY);
+  form.append("action", "upload");
+  form.append("source", base64);
+  form.append("format", "json");
+  const res = await fetch("https://freeimage.host/api/1/upload", {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+  const json = await res.json();
+  const url = json?.image?.url || json?.image?.display_url;
+  if (!url) throw new Error("No URL returned from freeimage.host");
+  return url as string;
+}
 
 export function PhotoUpload({
   label,
@@ -15,16 +44,25 @@ export function PhotoUpload({
   aspect?: "portrait" | "wide";
 }) {
   const ref = useRef<HTMLInputElement>(null);
-  const isUploaded = !!value && value.startsWith("data:");
   const [url, setUrl] = useState(value && /^https?:\/\//i.test(value) ? value : "");
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     setUrl(value && /^https?:\/\//i.test(value) ? value : "");
   }, [value]);
-  const handleFile = (f?: File) => {
+  const handleFile = async (f?: File) => {
     if (!f) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(f);
+    setError(null);
+    setUploading(true);
+    try {
+      const hostedUrl = await uploadToFreeimage(f);
+      onChange(hostedUrl);
+      setUrl(hostedUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
   };
   const box = aspect === "portrait" ? "h-32 w-24" : "h-20 w-full";
   return (
@@ -32,7 +70,9 @@ export function PhotoUpload({
       <p className="mb-1 text-xs text-muted-foreground">{label}</p>
       <div className="flex items-center gap-3">
         <div className={`${box} flex items-center justify-center overflow-hidden rounded-md border border-border bg-muted`}>
-          {value ? (
+          {uploading ? (
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          ) : value ? (
             <img src={value} alt={label} className="h-full w-full object-cover" />
           ) : (
             <span className="text-[10px] text-muted-foreground">No image</span>
@@ -44,12 +84,19 @@ export function PhotoUpload({
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={(e) => handleFile(e.target.files?.[0])}
+            onChange={(e) => {
+              handleFile(e.target.files?.[0]);
+              if (ref.current) ref.current.value = "";
+            }}
           />
-          <Button type="button" size="sm" variant="outline" onClick={() => ref.current?.click()}>
-            <Upload className="mr-1 h-3 w-3" /> Upload
+          <Button type="button" size="sm" variant="outline" disabled={uploading} onClick={() => ref.current?.click()}>
+            {uploading ? (
+              <><Loader2 className="mr-1 h-3 w-3 animate-spin" /> Uploading…</>
+            ) : (
+              <><Upload className="mr-1 h-3 w-3" /> Upload</>
+            )}
           </Button>
-          {value && (
+          {value && !uploading && (
             <Button type="button" size="sm" variant="ghost" onClick={() => onChange(undefined)}>
               <X className="mr-1 h-3 w-3" /> Remove
             </Button>
@@ -59,11 +106,9 @@ export function PhotoUpload({
       <div className="mt-2">
         <Input
           type="url"
-          placeholder={isUploaded ? "Uploaded photo is being used" : "Or paste image URL (optional)"}
-          value={isUploaded ? "" : url}
-          disabled={isUploaded}
+          placeholder="Or paste image URL (optional)"
+          value={url}
           onChange={(e) => {
-            if (isUploaded) return;
             const v = e.target.value;
             setUrl(v);
             const trimmed = v.trim();
@@ -72,11 +117,7 @@ export function PhotoUpload({
           }}
           className="text-xs"
         />
-        {isUploaded && (
-          <p className="mt-1 text-[10px] text-muted-foreground">
-            Uploaded photo takes priority. Remove it to use a URL instead.
-          </p>
-        )}
+        {error && <p className="mt-1 text-[10px] text-destructive">{error}</p>}
       </div>
     </div>
   );
