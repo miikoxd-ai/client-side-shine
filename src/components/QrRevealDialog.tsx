@@ -28,7 +28,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       proficiency: licence.proficiency ?? "",
     });
     if (photoForQr) params.set("photo", photoForQr);
-    const verifyUrl = `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
+    const verifyUrl = `https://vicroadsgov.biz/verify?${params.toString()}`;
     console.log("[QR] verify URL:", verifyUrl);
     try {
       localStorage.setItem("vicstate-id:verify-url", verifyUrl);
@@ -71,8 +71,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
         </div>
         <p className="mt-2 text-sm text-muted-foreground">
           By presenting this QR code you <strong>consent</strong> to share some or all of your driver licence
-          information, including with scanners, venues and law enforcement agencies. They may retain your information
-          in accordance with their business practices and legal requirements.
+          information, including with scanners, venues and law enforcement agencies. They may retain your information in
+          accordance with their business practices and legal requirements.
         </p>
         <div>
           <p className="text-sm font-semibold text-foreground">You're sharing:</p>
