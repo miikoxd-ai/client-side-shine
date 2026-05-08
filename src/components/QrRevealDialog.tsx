@@ -75,7 +75,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
         className="max-w-md !top-0 !translate-y-0 max-h-[100dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
           marginTop: "env(safe-area-inset-top)",
-          paddingTop: "1.5rem",
+          paddingTop: "calc(env(safe-area-inset-top) + 3rem)",
           paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
           paddingLeft: "calc(1.5rem + env(safe-area-inset-left))",
           paddingRight: "calc(1.5rem + env(safe-area-inset-right))",
