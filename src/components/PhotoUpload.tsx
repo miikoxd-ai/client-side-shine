@@ -15,6 +15,10 @@ export function PhotoUpload({
   aspect?: "portrait" | "wide";
 }) {
   const ref = useRef<HTMLInputElement>(null);
+  const [url, setUrl] = useState(value && /^https?:\/\//i.test(value) ? value : "");
+  useEffect(() => {
+    setUrl(value && /^https?:\/\//i.test(value) ? value : "");
+  }, [value]);
   const handleFile = (f?: File) => {
     if (!f) return;
     const reader = new FileReader();
