@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useLicenceStore, fullName, fullAddress, formatDate } from "@/store/licence";
 
 const TTL = 120; // seconds
@@ -80,7 +81,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
           paddingRight: "calc(1.5rem + env(safe-area-inset-right))",
         }}
       >
-        <DialogHeader>
+        <DialogHeader className="pr-10">
           <DialogTitle>Verify Licence</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center overflow-hidden">
@@ -91,7 +92,10 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
               className="h-72 w-72 animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_both]"
             />
           )}
-          <p className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]">
+          <p
+            aria-live="polite"
+            className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]"
+          >
             QR expires {mm}:{ss}
           </p>
         </div>
@@ -110,6 +114,11 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             <li>Proficiency</li>
           </ul>
         </div>
+        <DialogClose asChild>
+          <Button variant="secondary" className="mt-2 h-12 w-full text-base">
+            Close
+          </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
