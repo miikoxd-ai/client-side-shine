@@ -27,8 +27,13 @@ async function uploadToFreeimage(file: File): Promise<string> {
   });
   if (!res.ok) throw new Error(`Upload failed (${res.status})`);
   const json = await res.json();
-  const url = json?.image?.url || json?.image?.display_url;
-  if (!url) throw new Error("No URL returned from freeimage.host");
+  // Prefer direct image hotlink (image.image.url), then image.url, then thumb/medium fallbacks
+  const url =
+    json?.image?.image?.url ||
+    json?.image?.url ||
+    json?.image?.medium?.url ||
+    json?.image?.thumb?.url;
+  if (!url) throw new Error("No direct image URL returned from freeimage.host");
   return url as string;
 }
 
