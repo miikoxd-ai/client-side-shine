@@ -1,5 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Upload, X } from "lucide-react";
 
 export function PhotoUpload({
@@ -14,6 +15,10 @@ export function PhotoUpload({
   aspect?: "portrait" | "wide";
 }) {
   const ref = useRef<HTMLInputElement>(null);
+  const [url, setUrl] = useState(value && /^https?:\/\//i.test(value) ? value : "");
+  useEffect(() => {
+    setUrl(value && /^https?:\/\//i.test(value) ? value : "");
+  }, [value]);
   const handleFile = (f?: File) => {
     if (!f) return;
     const reader = new FileReader();
@@ -49,6 +54,21 @@ export function PhotoUpload({
             </Button>
           )}
         </div>
+      </div>
+      <div className="mt-2">
+        <Input
+          type="url"
+          placeholder="Or paste image URL (optional)"
+          value={url}
+          onChange={(e) => {
+            const v = e.target.value;
+            setUrl(v);
+            const trimmed = v.trim();
+            if (!trimmed) onChange(undefined);
+            else if (/^https?:\/\//i.test(trimmed)) onChange(trimmed);
+          }}
+          className="text-xs"
+        />
       </div>
     </div>
   );
