@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Upload, X } from "lucide-react";
 
 export function PhotoUpload({
@@ -15,11 +14,6 @@ export function PhotoUpload({
   aspect?: "portrait" | "wide";
 }) {
   const ref = useRef<HTMLInputElement>(null);
-  const isUploaded = !!value && value.startsWith("data:");
-  const [url, setUrl] = useState(value && /^https?:\/\//i.test(value) ? value : "");
-  useEffect(() => {
-    setUrl(value && /^https?:\/\//i.test(value) ? value : "");
-  }, [value]);
   const handleFile = (f?: File) => {
     if (!f) return;
     const reader = new FileReader();
@@ -55,28 +49,6 @@ export function PhotoUpload({
             </Button>
           )}
         </div>
-      </div>
-      <div className="mt-2">
-        <Input
-          type="url"
-          placeholder={isUploaded ? "Uploaded photo is being used" : "Or paste image URL (optional)"}
-          value={isUploaded ? "" : url}
-          disabled={isUploaded}
-          onChange={(e) => {
-            if (isUploaded) return;
-            const v = e.target.value;
-            setUrl(v);
-            const trimmed = v.trim();
-            if (!trimmed) onChange(undefined);
-            else if (/^https?:\/\//i.test(trimmed)) onChange(trimmed);
-          }}
-          className="text-xs"
-        />
-        {isUploaded && (
-          <p className="mt-1 text-[10px] text-muted-foreground">
-            Uploaded photo takes priority. Remove it to use a URL instead.
-          </p>
-        )}
       </div>
     </div>
   );

@@ -30,6 +30,23 @@ function IndexPage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  // Re-lock when the app is hidden/backgrounded so the user must re-enter
+  // the passcode when they return (e.g. closing/reopening the PWA).
+  useEffect(() => {
+    const lock = () => setUnlocked(false);
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") lock();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", lock);
+    window.addEventListener("blur", lock);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", lock);
+      window.removeEventListener("blur", lock);
+    };
+  }, [setUnlocked]);
+
   // Preload all sub-routes once unlocked so navigation feels instant.
   useEffect(() => {
     if (!unlocked) return;
