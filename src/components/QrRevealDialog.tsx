@@ -24,6 +24,7 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
     if (isHttpPhoto) params.set("photo", photo);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const verifyUrl = `${origin}/verify?${params.toString()}`;
+    console.log("[QR] verify URL:", verifyUrl);
     try {
       localStorage.setItem("vicstate-id:verify-url", verifyUrl);
     } catch {}
