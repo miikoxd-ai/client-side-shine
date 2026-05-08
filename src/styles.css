@@ -185,7 +185,6 @@
   }
 }
 
-/* DEBUG: shows safe-area-inset value at top of screen — remove after testing */
 body::before {
   content: "inset-top: " env(safe-area-inset-top, 0px);
   position: fixed;
