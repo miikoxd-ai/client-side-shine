@@ -114,6 +114,11 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             <li>Proficiency</li>
           </ul>
         </div>
+        <DialogClose asChild>
+          <Button variant="secondary" className="mt-2 h-12 w-full text-base">
+            Close
+          </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
