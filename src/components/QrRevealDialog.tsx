@@ -10,6 +10,23 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   const [dataUrl, setDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(TTL);
 
+  // While the QR dialog is open, allow pinch-zoom on the page so users can
+  // zoom into the QR code. Restore the locked viewport when the dialog closes.
+  useEffect(() => {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+    if (!meta) return;
+    const original = meta.getAttribute("content") ?? "";
+    if (open) {
+      meta.setAttribute(
+        "content",
+        "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover",
+      );
+      return () => {
+        meta.setAttribute("content", original);
+      };
+    }
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     setRemaining(TTL);
