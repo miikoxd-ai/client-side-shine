@@ -73,12 +73,12 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md !top-0 !translate-y-0 max-h-[100dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)] [&>button]:!top-[calc(env(safe-area-inset-top)+2.5rem)] [&>button]:!right-[calc(env(safe-area-inset-right)+1rem)] [&>button]:z-50"
+        className="max-w-md !top-[env(safe-area-inset-top)] !translate-y-0 max-h-[100dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)] [&>button]:!top-[2.5rem] [&>button]:!right-[calc(env(safe-area-inset-right)+1rem)] [&>button]:z-50"
         style={{
-          // Push content far enough down to clear the Dynamic Island.
-          // safe-area-inset-top covers the status bar (~59px on Dynamic Island devices),
-          // and the extra 2.5rem clears the island itself which extends further down.
-          paddingTop: "calc(env(safe-area-inset-top) + 2.5rem)",
+          // The dialog box itself is offset by safe-area-inset-top (clears the
+          // status bar). Inner padding then clears the Dynamic Island bump
+          // which extends further down than the status bar text.
+          paddingTop: "2.5rem",
           paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
           paddingLeft: "calc(1.5rem + env(safe-area-inset-left))",
           paddingRight: "calc(1.5rem + env(safe-area-inset-right))",
