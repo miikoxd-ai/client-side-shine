@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { VicRoadsLogo } from "@/components/VicRoadsLogo";
