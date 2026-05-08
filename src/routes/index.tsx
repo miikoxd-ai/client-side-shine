@@ -23,11 +23,38 @@ function IndexPage() {
   const hasHydrated = useLicenceStore((s) => s.hasHydrated);
   const setUnlocked = useLicenceStore((s) => s.setUnlocked);
   const setPasscodeHash = useLicenceStore((s) => s.setPasscodeHash);
+  const router = useRouter();
 
   const [step, setStep] = useState<"create" | "confirm" | "enter">("create");
   const [first, setFirst] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Re-lock when the app is hidden/backgrounded so the user must re-enter
+  // the passcode when they return (e.g. closing/reopening the PWA).
+  useEffect(() => {
+    const lock = () => setUnlocked(false);
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") lock();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", lock);
+    window.addEventListener("blur", lock);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", lock);
+      window.removeEventListener("blur", lock);
+    };
+  }, [setUnlocked]);
+
+  // Preload all sub-routes once unlocked so navigation feels instant.
+  useEffect(() => {
+    if (!unlocked) return;
+    const routes = ["/licence", "/vehicles", "/payments", "/demerit", "/profile"] as const;
+    routes.forEach((to) => {
+      router.preloadRoute({ to }).catch(() => {});
+    });
+  }, [unlocked, router]);
 
   // Don't render passcode UI until persisted state has rehydrated from localStorage,
   // otherwise iOS PWA / SSR shows "Create Passcode" even when a hash already exists.
