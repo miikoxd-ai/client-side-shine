@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLicenceStore, fullName, fullAddress, formatDate } from "@/store/licence";
 
 const TTL = 120; // seconds
@@ -13,6 +12,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
 
   // While the QR dialog is open, allow pinch-zoom on the page so users can
   // zoom into the QR code. Restore the locked viewport when the dialog closes.
+  // Note: viewport-fit=cover must be present in BOTH states so that
+  // env(safe-area-inset-*) returns non-zero values on notched devices.
   useEffect(() => {
     const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
     if (!meta) return;
@@ -74,14 +75,16 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
       <DialogContent
         className="max-w-md !top-0 !translate-y-0 max-h-[100dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
-          marginTop: "env(safe-area-inset-top)",
-          paddingTop: "calc(env(safe-area-inset-top) + 3rem)",
+          // Push content far enough down to clear the Dynamic Island.
+          // safe-area-inset-top covers the status bar (~59px on Dynamic Island devices),
+          // and the extra 2.5rem clears the island itself which extends further down.
+          paddingTop: "calc(env(safe-area-inset-top) + 2.5rem)",
           paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
           paddingLeft: "calc(1.5rem + env(safe-area-inset-left))",
           paddingRight: "calc(1.5rem + env(safe-area-inset-right))",
         }}
       >
-        <DialogHeader className="pr-10">
+        <DialogHeader>
           <DialogTitle>Verify Licence</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center overflow-hidden">
@@ -93,8 +96,8 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             />
           )}
           <p
-            aria-live="polite"
             className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]"
+            aria-live="polite"
           >
             QR expires {mm}:{ss}
           </p>
@@ -114,11 +117,6 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             <li>Proficiency</li>
           </ul>
         </div>
-        <DialogClose asChild>
-          <Button variant="secondary" className="mt-2 h-12 w-full text-base">
-            Close
-          </Button>
-        </DialogClose>
       </DialogContent>
     </Dialog>
   );
