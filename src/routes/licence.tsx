@@ -80,10 +80,10 @@ function LicencePage() {
       license: licence.licenceNumber ?? "",
       expiry: licence.expiry ?? "",
       licensetype: licence.type ?? "",
+      proficiency: licence.proficiency ?? "",
     });
     if (isHttpPhoto) params.set("photo", photo);
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    return `${origin}/verify?${params.toString()}`;
+    return `https://happy-replication-tool.lovable.app/verify?${params.toString()}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [licence, refreshNonce]);
 
