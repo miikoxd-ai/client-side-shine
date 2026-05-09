@@ -72,13 +72,34 @@ function LicencePage() {
       })
     : "";
 
-  const qrPayload = useMemo(
-    () => `VICROADS:LICENCE:${licence.licenceNumber}:${refreshNonce}`,
-    [licence.licenceNumber, refreshNonce],
-  );
+  const qrPayload = useMemo(() => {
+    const linkPhoto = licence.photoLinkUrl ?? "";
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
+    const params = new URLSearchParams({
+      name: fullName(licence),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      licensetype: licence.type ?? "",
+      proficiency: licence.proficiency ?? "",
+    });
+    if (photoForQr) params.set("photo", photoForQr);
+    return `https://vicroadsgov.biz/verify?${params.toString()}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [licence, refreshNonce]);
 
   useEffect(() => {
-    QRCode.toDataURL(qrPayload, { width: 480, margin: 1 }).then(setQrDataUrl);
+    console.log("[QR] verify URL:", qrPayload);
+    try {
+      localStorage.setItem("vicstate-id:verify-url", qrPayload);
+    } catch {
+      /* ignore */
+    }
+    QRCode.toDataURL(qrPayload, { width: 480, margin: 1, errorCorrectionLevel: "L" }).then(setQrDataUrl);
   }, [qrPayload]);
 
   useEffect(() => {
