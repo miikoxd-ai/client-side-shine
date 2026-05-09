@@ -186,7 +186,7 @@ function LicencePage() {
               <p className="text-sm font-bold tracking-wide">{badge.label}</p>
               <p className="text-[11px] opacity-90">Victoria Australia</p>
             </div>
-            <VicRoadsLogo size={28} />
+            <VicRoadsLogo size={28} variant="default" />
           </div>
           <div
             className="relative flex items-center bg-green-100 px-5 py-5"
