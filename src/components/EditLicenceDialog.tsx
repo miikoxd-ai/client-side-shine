@@ -116,6 +116,17 @@ export function EditLicenceDialog({ open, onOpenChange }: { open: boolean; onOpe
           <Field label="Photo" full>
             <PhotoUpload label="Licence photo" value={draft.photoUrl} onChange={(v) => update("photoUrl", v)} aspect="portrait" />
           </Field>
+          <Field label="Photo link (URL for QR verify)" full>
+            <Input
+              type="url"
+              placeholder="https://..."
+              value={draft.photoLinkUrl ?? ""}
+              onChange={(e) => update("photoLinkUrl", e.target.value)}
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Used as the photo parameter in the QR verify link. Your uploaded photo above is always shown on the licence.
+            </p>
+          </Field>
           <Field label="Signature" full>
             <PhotoUpload label="Signature image" value={draft.signatureUrl} onChange={(v) => update("signatureUrl", v)} aspect="wide" />
           </Field>

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as VehiclesRouteImport } from './routes/vehicles'
 import { Route as QrcodedialogueRouteImport } from './routes/qrcodedialogue'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -17,6 +18,11 @@ import { Route as LicenceRouteImport } from './routes/licence'
 import { Route as DemeritRouteImport } from './routes/demerit'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VehiclesRoute = VehiclesRouteImport.update({
   id: '/vehicles',
   path: '/vehicles',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/qrcodedialogue'
     | '/vehicles'
+    | '/verify'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/qrcodedialogue'
     | '/vehicles'
+    | '/verify'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/qrcodedialogue'
     | '/vehicles'
+    | '/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +131,18 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   QrcodedialogueRoute: typeof QrcodedialogueRoute
   VehiclesRoute: typeof VehiclesRoute
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vehicles': {
       id: '/vehicles'
       path: '/vehicles'
@@ -183,7 +203,18 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   QrcodedialogueRoute: QrcodedialogueRoute,
   VehiclesRoute: VehiclesRoute,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
