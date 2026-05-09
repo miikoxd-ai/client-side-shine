@@ -41,7 +41,7 @@ function LicencePage() {
   const [tab, setTab] = useState<Tab>("Licence");
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
-  const [revealed, setRevealed] = useState(false);
+  
   const [now, setNow] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [pullY, setPullY] = useState(0);
