@@ -30,7 +30,22 @@ function IndexPage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-lock-on-background removed: users shouldn't be re-prompted just for switching apps.
+  // Re-lock when the app is hidden/backgrounded so the user must re-enter
+  // the passcode when they return (e.g. closing/reopening the PWA).
+  useEffect(() => {
+    const lock = () => setUnlocked(false);
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") lock();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", lock);
+    window.addEventListener("blur", lock);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", lock);
+      window.removeEventListener("blur", lock);
+    };
+  }, [setUnlocked]);
 
   // Preload all sub-routes once unlocked so navigation feels instant.
   useEffect(() => {
@@ -159,8 +174,7 @@ function Home() {
       <button
         type="button"
         onClick={() => navigate({ to: "/licence" })}
-        className="fixed left-1/2 z-20 flex w-[calc(100%-2.5rem)] max-w-[400px] -translate-x-1/2 items-center justify-between rounded-2xl bg-slate-900 p-5 text-left text-white shadow-lg transition hover:bg-slate-800"
-        style={{ bottom: "calc(5rem + env(safe-area-inset-bottom))" }}
+        className="fixed bottom-20 left-1/2 z-20 flex w-[calc(100%-2.5rem)] max-w-[400px] -translate-x-1/2 items-center justify-between rounded-2xl bg-slate-900 p-5 text-left text-white shadow-lg transition hover:bg-slate-800"
       >
         <div>
           <p className="font-semibold">My licence</p>

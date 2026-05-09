@@ -28,7 +28,6 @@ export type Licence = {
   permitStatus: "Current" | "Expired" | "Suspended";
   permitIssueDate: string; // ISO
   photoUrl?: string;
-  photoLinkUrl?: string;
   signatureUrl?: string;
   demeritPoints: number;
   vehicles: Vehicle[];
