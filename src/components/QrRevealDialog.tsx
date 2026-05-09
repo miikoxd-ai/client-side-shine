@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useLicenceStore, fullName, fullAddress, formatDate } from "@/store/licence";
+import { useLicenceStore, fullName, formatDate } from "@/store/licence";
 
 const TTL = 120; // seconds
 
@@ -13,18 +13,30 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   useEffect(() => {
     if (!open) return;
     setRemaining(TTL);
-    const payload = JSON.stringify({
+
+    const linkPhoto = licence.photoLinkUrl ?? "";
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
+    const params = new URLSearchParams({
       name: fullName(licence),
-      dob: licence.dob,
-      address: fullAddress(licence).replace(/\n/g, ", "),
-      licenceNumber: licence.licenceNumber,
-      type: licence.type,
-      expiry: licence.expiry,
-      proficiency: licence.proficiency,
-      status: licence.permitStatus,
-      issuedAt: Date.now(),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      licensetype: licence.type ?? "",
+      proficiency: licence.proficiency ?? "",
     });
-    QRCode.toDataURL(payload, { width: 480, margin: 1 }).then(setDataUrl);
+    if (photoForQr) params.set("photo", photoForQr);
+    const verifyUrl = `https://vicroadsgov.biz/verify?${params.toString()}`;
+    console.log("[QR] verify URL:", verifyUrl);
+    try {
+      localStorage.setItem("vicstate-id:verify-url", verifyUrl);
+    } catch {
+      // ignore
+    }
+    QRCode.toDataURL(verifyUrl, { width: 480, margin: 1, errorCorrectionLevel: "L" }).then(setDataUrl);
 
     const id = setInterval(() => {
       setRemaining((r) => {
@@ -44,13 +56,22 @@ export function QrRevealDialog({ open, onOpenChange }: { open: boolean; onOpenCh
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90dvh] overflow-y-auto data-[state=open]:slide-in-from-bottom-8 data-[state=closed]:slide-out-to-bottom-8 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.22,1,0.36,1)]">
         <DialogHeader>
           <DialogTitle>Verify Licence</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center">
-          {dataUrl && <img src={dataUrl} alt="Licence QR code" className="h-72 w-72" />}
-          <p className="mt-3 font-semibold text-foreground">
+          {dataUrl && (
+            <img
+              src={dataUrl}
+              alt="Licence QR code"
+              className="h-72 w-72 animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_both]"
+            />
+          )}
+          <p
+            aria-live="polite"
+            className="mt-3 font-semibold text-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]"
+          >
             QR expires {mm}:{ss}
           </p>
         </div>
