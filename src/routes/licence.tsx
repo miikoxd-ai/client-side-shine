@@ -48,7 +48,7 @@ function LicencePage() {
   const [refreshNonce, setRefreshNonce] = useState(0);
   const pullStart = useRef<number | null>(null);
 
-  const badge = proficiencyBadge(licence.proficiency);
+  const badge = proficiencyBadge(licence.proficiency, licence.type);
   const tilt = useDeviceTilt(14);
   const holoShift = `translate(${tilt.x * 11.9}px, ${tilt.y * 11.9}px)`;
   const sheenAngle = 90 + tilt.x * 60;
@@ -300,7 +300,7 @@ function Hologram() {
 
 function LicenceTab() {
   const licence = useLicenceStore((s) => s.licence);
-  const badge = proficiencyBadge(licence.proficiency);
+  const badge = proficiencyBadge(licence.proficiency, licence.type);
   const [showCard, setShowCard] = useState(false);
 
   return (
