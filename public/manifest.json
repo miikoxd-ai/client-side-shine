@@ -1,6 +1,6 @@
 {
-  "name": "VicState ID",
-  "short_name": "VicState ID",
+  "name": "myVicRoads",
+  "short_name": "myVicRoads",
   "description": "Your Victorian digital driver licence",
   "start_url": "/",
   "scope": "/",
