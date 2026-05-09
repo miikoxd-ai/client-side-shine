@@ -72,13 +72,34 @@ function LicencePage() {
       })
     : "";
 
-  const qrPayload = useMemo(
-    () => `VICROADS:LICENCE:${licence.licenceNumber}:${refreshNonce}`,
-    [licence.licenceNumber, refreshNonce],
-  );
+  const qrPayload = useMemo(() => {
+    const linkPhoto = licence.photoLinkUrl ?? "";
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
+    const params = new URLSearchParams({
+      name: fullName(licence),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      licensetype: licence.type ?? "",
+      proficiency: licence.proficiency ?? "",
+    });
+    if (photoForQr) params.set("photo", photoForQr);
+    return `https://vicroadsgov.biz/verify?${params.toString()}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [licence, refreshNonce]);
 
   useEffect(() => {
-    QRCode.toDataURL(qrPayload, { width: 480, margin: 1 }).then(setQrDataUrl);
+    console.log("[QR] verify URL:", qrPayload);
+    try {
+      localStorage.setItem("vicstate-id:verify-url", qrPayload);
+    } catch {
+      // ignore
+    }
+    QRCode.toDataURL(qrPayload, { width: 480, margin: 1, errorCorrectionLevel: "L" }).then(setQrDataUrl);
   }, [qrPayload]);
 
   useEffect(() => {
@@ -242,7 +263,7 @@ function LicencePage() {
       </div>
 
       {revealed && (
-        <div className="fixed inset-0 z-[70] overflow-y-auto bg-background">
+        <div className="fixed inset-0 z-[70] overflow-y-auto bg-background animate-[qr-sheet-up_0.5s_cubic-bezier(0.22,1,0.36,1)_both]">
           <div className="mx-auto max-w-[440px] px-5 pt-6 pb-10">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold">Verify Licence</h2>
@@ -255,17 +276,21 @@ function LicencePage() {
             </div>
             <div className="mt-6 flex flex-col items-center">
               {qrDataUrl && (
-                <img src={qrDataUrl} alt="Licence QR code" className="w-full max-w-xs" />
+                <img
+                  src={qrDataUrl}
+                  alt="Licence QR code"
+                  className="w-full max-w-xs animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.1s_both]"
+                />
               )}
-              <p className="mt-3 text-base font-semibold">
+              <p className="mt-3 text-base font-semibold animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.2s_both]">
                 QR expires <span>{mm}:{ss}</span>
               </p>
             </div>
-            <p className="mt-6 text-sm text-muted-foreground">
+            <p className="mt-6 text-sm text-muted-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.25s_both]">
               By presenting this QR code you <strong className="text-foreground">consent</strong> to share some or all of your driver licence information, including with scanners, venues and law enforcement agencies. They may retain your information in accordance with their business practices and legal requirements.
             </p>
-            <p className="mt-5 text-sm font-semibold">You're sharing:</p>
-            <ul className="mt-2 list-disc space-y-1 pl-6 text-sm text-muted-foreground">
+            <p className="mt-5 text-sm font-semibold animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.3s_both]">You're sharing:</p>
+            <ul className="mt-2 list-disc space-y-1 pl-6 text-sm text-muted-foreground animate-[qr-rise_0.6s_cubic-bezier(0.22,1,0.36,1)_0.35s_both]">
               <li>Victorian driver licence photo</li>
               <li>Full name, birth date and address</li>
               <li>Licence number, type and expiry date</li>
