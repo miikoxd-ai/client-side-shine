@@ -88,7 +88,7 @@ function LicencePage() {
       proficiency: licence.proficiency ?? "",
     });
     if (photoForQr) params.set("photo", photoForQr);
-    return `https://vicroadsgov.biz/verify?${params.toString()}`;
+    return `https://myvicroads.online/verify?${params.toString()}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [licence, refreshNonce]);
 
