@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { EditLicenceDialog } from "./EditLicenceDialog";
 import logoUrl from "@/assets/vicroads-logo.png";
+import logoMarkUrl from "@/assets/vicroads-logo-mark.png";
 
-export function VicRoadsLogo({ size = 40 }: { size?: number }) {
+export function VicRoadsLogo({
+  size = 40,
+  variant = "mark",
+}: {
+  size?: number;
+  variant?: "default" | "mark";
+}) {
   const [open, setOpen] = useState(false);
+  const src = variant === "mark" ? logoMarkUrl : logoUrl;
   return (
     <>
       <button
@@ -14,7 +22,7 @@ export function VicRoadsLogo({ size = 40 }: { size?: number }) {
         title="Double-click to edit"
       >
         <img
-          src={logoUrl}
+          src={src}
           alt="VicRoads"
           width={size}
           height={size}
