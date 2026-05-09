@@ -103,6 +103,10 @@ export function EditLicenceDialog({ open, onOpenChange }: { open: boolean; onOpe
             <Input type="date" value={draft.permitIssueDate} onChange={(e) => update("permitIssueDate", e.target.value)} />
           </Field>
 
+          <Field label="Issue date" full>
+            <Input type="date" value={draft.issueDate} onChange={(e) => update("issueDate", e.target.value)} />
+          </Field>
+
           <Field label="Demerit points" full>
             <Input
               type="number"

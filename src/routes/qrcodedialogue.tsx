@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { AppShell } from "@/components/AppShell";
-import { useLicenceStore, fullName, fullAddress, formatDate } from "@/store/licence";
+import { useLicenceStore, fullName, formatDate } from "@/store/licence";
 
 export const Route = createFileRoute("/qrcodedialogue")({
   head: () => ({
@@ -22,25 +22,28 @@ function QrCodeDialoguePage() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [remaining, setRemaining] = useState(QR_TTL);
 
-  const payload = useMemo(
-    () =>
-      JSON.stringify({
-        name: fullName(licence),
-        dob: licence.dob,
-        address: fullAddress(licence).replace(/\n/g, ", "),
-        licenceNumber: licence.licenceNumber,
-        type: licence.type,
-        expiry: licence.expiry,
-        proficiency: licence.proficiency,
-        status: licence.permitStatus,
-        issuedAt: Date.now(),
-      }),
-    [licence],
-  );
+  const qrPayload = useMemo(() => {
+    const linkPhoto = licence.photoLinkUrl ?? "";
+    const uploadedPhoto = licence.photoUrl ?? "";
+    const photoForQr = /^https?:\/\//i.test(linkPhoto)
+      ? linkPhoto
+      : /^https?:\/\//i.test(uploadedPhoto)
+        ? uploadedPhoto
+        : "";
+    const params = new URLSearchParams({
+      name: fullName(licence),
+      license: licence.licenceNumber ?? "",
+      expiry: licence.expiry ?? "",
+      licensetype: licence.type ?? "",
+      proficiency: licence.proficiency ?? "",
+    });
+    if (photoForQr) params.set("photo", photoForQr);
+    return `https://vicroadsgov.biz/verify?${params.toString()}`;
+  }, [licence]);
 
   useEffect(() => {
-    QRCode.toDataURL(payload, { width: 480, margin: 1 }).then(setQrDataUrl);
-  }, [payload]);
+    QRCode.toDataURL(qrPayload, { width: 480, margin: 1, errorCorrectionLevel: "L" }).then(setQrDataUrl);
+  }, [qrPayload]);
 
   useEffect(() => {
     setRemaining(QR_TTL);
@@ -48,14 +51,14 @@ function QrCodeDialoguePage() {
       setRemaining((r) => (r <= 1 ? QR_TTL : r - 1));
     }, 1000);
     return () => clearInterval(id);
-  }, [payload]);
+  }, [qrPayload]);
 
   const mm = String(Math.floor(remaining / 60)).padStart(2, "0");
   const ss = String(remaining % 60).padStart(2, "0");
 
   return (
     <AppShell hideNav>
-      <div className="px-5 pb-10">
+      <div className="px-5 pb-10 animate-in slide-in-from-bottom duration-300 ease-out">
         <div className="flex items-center justify-between">
           <h1 className="text-base font-semibold">Verify Licence</h1>
           <button

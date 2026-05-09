@@ -153,15 +153,16 @@ export function formatDate(iso: string) {
   return d.toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
 }
 
-export function proficiencyBadge(p: Proficiency) {
+export function proficiencyBadge(p: Proficiency, type?: LicenceType) {
+  const noun = type === "Motorcycle" ? "MOTORCYCLE" : type === "Heavy Vehicle" ? "HEAVY VEHICLE" : "DRIVER";
   switch (p) {
     case "Full":
-      return { label: "FULL DRIVER LICENCE", color: "bg-green-700", chip: null };
+      return { label: `FULL ${noun} LICENCE`, color: "bg-green-700", chip: null };
     case "Probationary P1":
-      return { label: "PROBATIONARY DRIVER LICENCE", color: "bg-red-600", chip: { letter: "P", bg: "bg-red-600" } };
+      return { label: `PROBATIONARY ${noun} LICENCE`, color: "bg-red-600", chip: { letter: "P", bg: "bg-red-600" } };
     case "Probationary P2":
-      return { label: "PROBATIONARY DRIVER LICENCE", color: "bg-red-600", chip: { letter: "P", bg: "bg-green-600" } };
+      return { label: `PROBATIONARY ${noun} LICENCE`, color: "bg-red-600", chip: { letter: "P", bg: "bg-green-600" } };
     case "Learner":
-      return { label: "LEARNER PERMIT", color: "bg-yellow-500", chip: { letter: "L", bg: "bg-yellow-500" } };
+      return { label: `LEARNER ${noun === "DRIVER" ? "" : noun + " "}PERMIT`.replace(/\s+/g, " ").trim(), color: "bg-yellow-500", chip: { letter: "L", bg: "bg-yellow-500" } };
   }
 }
