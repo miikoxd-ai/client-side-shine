@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VehiclesRouteImport } from './routes/vehicles'
+import { Route as QrcodedialogueRouteImport } from './routes/qrcodedialogue'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as LicenceRouteImport } from './routes/licence'
@@ -19,6 +20,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const VehiclesRoute = VehiclesRouteImport.update({
   id: '/vehicles',
   path: '/vehicles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrcodedialogueRoute = QrcodedialogueRouteImport.update({
+  id: '/qrcodedialogue',
+  path: '/qrcodedialogue',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/licence': typeof LicenceRoute
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
+  '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/licence': typeof LicenceRoute
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
+  '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/licence': typeof LicenceRoute
   '/payments': typeof PaymentsRoute
   '/profile': typeof ProfileRoute
+  '/qrcodedialogue': typeof QrcodedialogueRoute
   '/vehicles': typeof VehiclesRoute
 }
 export interface FileRouteTypes {
@@ -80,9 +89,17 @@ export interface FileRouteTypes {
     | '/licence'
     | '/payments'
     | '/profile'
+    | '/qrcodedialogue'
     | '/vehicles'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demerit' | '/licence' | '/payments' | '/profile' | '/vehicles'
+  to:
+    | '/'
+    | '/demerit'
+    | '/licence'
+    | '/payments'
+    | '/profile'
+    | '/qrcodedialogue'
+    | '/vehicles'
   id:
     | '__root__'
     | '/'
@@ -90,6 +107,7 @@ export interface FileRouteTypes {
     | '/licence'
     | '/payments'
     | '/profile'
+    | '/qrcodedialogue'
     | '/vehicles'
   fileRoutesById: FileRoutesById
 }
@@ -99,6 +117,7 @@ export interface RootRouteChildren {
   LicenceRoute: typeof LicenceRoute
   PaymentsRoute: typeof PaymentsRoute
   ProfileRoute: typeof ProfileRoute
+  QrcodedialogueRoute: typeof QrcodedialogueRoute
   VehiclesRoute: typeof VehiclesRoute
 }
 
@@ -109,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/vehicles'
       fullPath: '/vehicles'
       preLoaderRoute: typeof VehiclesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qrcodedialogue': {
+      id: '/qrcodedialogue'
+      path: '/qrcodedialogue'
+      fullPath: '/qrcodedialogue'
+      preLoaderRoute: typeof QrcodedialogueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -155,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   LicenceRoute: LicenceRoute,
   PaymentsRoute: PaymentsRoute,
   ProfileRoute: ProfileRoute,
+  QrcodedialogueRoute: QrcodedialogueRoute,
   VehiclesRoute: VehiclesRoute,
 }
 export const routeTree = rootRouteImport
