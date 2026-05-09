@@ -142,3 +142,11 @@
     color: var(--color-foreground);
   }
 }
+
+@keyframes slide-up-reveal {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up-reveal {
+  animation: slide-up-reveal 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
