@@ -189,7 +189,7 @@ function LicencePage() {
                 <img src={coatOfArmsOverlayImg} alt="" aria-hidden className="pointer-events-none absolute right-1 top-1/2 h-[80px] w-[80px] -translate-y-1/2 opacity-[0.15]" />
               </div>
               <button
-                onClick={() => setRevealed(true)}
+                onClick={() => navigate({ to: "/qrcodedialogue" })}
                 className="relative flex aspect-[4/5] w-[45%] flex-col items-stretch rounded-lg bg-white p-3 text-center shadow-sm"
                 aria-label="Expand QR code"
               >
