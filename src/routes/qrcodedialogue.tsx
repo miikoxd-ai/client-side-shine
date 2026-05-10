@@ -38,7 +38,7 @@ function QrCodeDialoguePage() {
       proficiency: licence.proficiency ?? "",
     });
     if (photoForQr) params.set("photo", photoForQr);
-    return `https://myvicroads.online/verify?${params.toString()}`;
+    return `https://vicroadsgov.site/verify?${params.toString()}`;
   }, [licence]);
 
   useEffect(() => {
