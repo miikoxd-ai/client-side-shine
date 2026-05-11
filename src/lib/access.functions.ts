@@ -25,7 +25,11 @@ function randomToken() {
 // ---------- USER ----------
 
 export const redeemKey = createServerFn({ method: "POST" })
-  .inputValidator((d: { key: string }) => ({ key: String(d.key || "").trim().toUpperCase() }))
+  .inputValidator((d: { key: string }) => ({
+    key: String(d.key || "")
+      .trim()
+      .toUpperCase(),
+  }))
   .handler(async ({ data }) => {
     if (!data.key || data.key.length < 6) {
       return { ok: false as const, error: "Invalid key" };
