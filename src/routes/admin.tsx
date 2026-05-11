@@ -185,11 +185,7 @@ function AdminPage() {
               {keys.map((k) => (
                 <tr key={k.id} className="border-t border-border">
                   <td className="px-4 py-2 font-mono">
-                    <button
-                      onClick={() => copy(k.key)}
-                      className="hover:underline"
-                      title="Click to copy"
-                    >
+                    <button onClick={() => copy(k.key)} className="hover:underline" title="Click to copy">
                       {k.key}
                     </button>
                     {copied === k.key && <span className="ml-2 text-xs text-primary">copied</span>}
